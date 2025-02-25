@@ -259,6 +259,10 @@ li span.reference {
     color: black;
 }
 
+.button.history{
+    background-color: purple;
+}
+
 .button.sav {
     background-color: #f39c12;
     color: white;
