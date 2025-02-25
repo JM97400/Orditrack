@@ -30,7 +30,7 @@ $sql_sav = "SELECT id, numero_serie FROM pcs WHERE status = 'en réparation'"; /
 $stmt_sav = $pdo->query($sql_sav);
 $pcs_sav = $stmt_sav->fetchAll();
 
-// Récupérer les PC en prêt (colonne de droite)
+////////////////// Récupérer les PC en prêt (colonne de droite)////////////////////////////////
 $sql_prêt = "SELECT r.id AS reservation_id, r.date_debut, r.date_retour, u.username AS user, p.numero_serie AS pc
              FROM reservations r
              JOIN users u ON r.id_user = u.id
@@ -98,25 +98,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: admin.php");
         exit;
     }
-}
 
-// Vérifier si le bouton "Supprimer" a été cliqué
-if (isset($_POST['delete'])) {
-    // Récupérer l'ID du PC à supprimer
-    $pc_id = $_POST['pc_id'];
+    // Vérifier si le bouton "Supprimer" a été cliqué
+    if (isset($_POST['delete'])) {
+        // Récupérer l'ID du PC à supprimer
+        $pc_id = $_POST['pc_id'];
 
-    // Préparer la requête SQL pour supprimer le PC
-    $sql_delete = "DELETE FROM pcs WHERE id = :pc_id";
-    $stmt_delete = $pdo->prepare($sql_delete);
+        // Préparer la requête SQL pour supprimer le PC
+        $sql_delete = "DELETE FROM pcs WHERE id = :pc_id";
+        $stmt_delete = $pdo->prepare($sql_delete);
 
-    // Exécuter la requête
-    if ($stmt_delete->execute([':pc_id' => $pc_id])) {
-        // Afficher un message de succès ou rediriger vers la même page pour rafraîchir la liste
-        echo "PC supprimé avec succès.";
-        header("Location: admin.php"); // Redirige pour rafraîchir la page après suppression
+        // Exécuter la requête
+        if ($stmt_delete->execute([':pc_id' => $pc_id])) {
+            // Afficher un message de succès ou rediriger vers la même page pour rafraîchir la liste
+            echo "PC supprimé avec succès.";
+            header("Location: admin.php"); // Redirige pour rafraîchir la page après suppression
+            exit();
+        } else {
+            echo "Erreur lors de la suppression du PC.";
+        }
+    }
+
+    // Vérifier si le bouton "Supprimer" de la réservation a été cliqué
+    if (isset($_POST['delete_reservation'])) {
+        $reservation_id = $_POST['reservation_id'];
+        
+        // Mettre à jour le statut du PC comme disponible
+        $update_pc_sql = "UPDATE pcs SET status = 'disponible' 
+                         WHERE id = (SELECT id_pc FROM reservations WHERE id = :reservation_id)";
+        $stmt_pc = $pdo->prepare($update_pc_sql);
+        $stmt_pc->execute([':reservation_id' => $reservation_id]);
+        
+        // Supprimer la réservation
+        $delete_sql = "DELETE FROM reservations WHERE id = :reservation_id";
+        $stmt_delete = $pdo->prepare($delete_sql);
+        $stmt_delete->execute([':reservation_id' => $reservation_id]);
+        
+        header("Location: admin.php");
         exit();
-    } else {
-        echo "Erreur lors de la suppression du PC.";
     }
 }
 
@@ -213,7 +232,6 @@ if (isset($_POST['delete'])) {
     <?php endif; ?>
 </div>
 
-
 <!--////////////////// Colonne centrale : PC en attente de prêt ////////////////////////-->
 
 <div class="stock-column">
@@ -249,6 +267,10 @@ if (isset($_POST['delete'])) {
                     <form action="admin.php" method="POST" style="display:inline;">
                         <button type="submit" name="retour" class="button retour">Retour</button>
                         <input type="hidden" name="pc_id" value="<?php echo $pc['reservation_id']; ?>">
+                    </form>
+                    <form action="admin.php" method="POST" style="display:inline;">
+                        <button type="submit" name="delete_reservation" class="button delete" value="1">Supprimer</button>
+                        <input type="hidden" name="reservation_id" value="<?php echo $pc['reservation_id']; ?>">
                     </form>
                 </li>
             <?php endforeach; ?>
