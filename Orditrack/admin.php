@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Vérifier si le bouton "Supprimer" a été cliqué
+    // Vérifier si le bouton "Supprimer" a été cliqué (pour les PC disponibles)
     if (isset($_POST['delete'])) {
         // Récupérer l'ID du PC à supprimer
         $pc_id = $_POST['pc_id'];
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Vérifier si le bouton "Supprimer" de la réservation a été cliqué
+    // Vérifier si le bouton "Supprimer" de la réservation a été cliqué (PC en prêt)
     if (isset($_POST['delete_reservation'])) {
         $reservation_id = $_POST['reservation_id'];
         
@@ -136,6 +136,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         header("Location: admin.php");
         exit();
+    }
+
+    // Vérifier si le bouton "Supprimer" de la réservation en attente a été cliqué (PC en attente de prêt)
+    if (isset($_POST['delete_pending_reservation'])) {
+        $reservation_id = $_POST['reservation_id'];
+        
+        // Supprimer la réservation (le PC est déjà disponible, pas besoin de modifier son statut)
+        $delete_sql = "DELETE FROM reservations WHERE id = :reservation_id";
+        $stmt_delete = $pdo->prepare($delete_sql);
+        $stmt_delete->execute([':reservation_id' => $reservation_id]);
+        
+        header("Location: admin.php");
+        exit();
+    }
+
+    // Traitement de l'importation du fichier CSV
+    if (isset($_POST['import_csv']) && isset($_FILES['csv_file'])) {
+        $file = $_FILES['csv_file']['tmp_name'];
+        if (($handle = fopen($file, "r")) !== FALSE) {
+            // Préparer la requête d'insertion
+            $insert_sql = "INSERT INTO pcs (numero_serie, status) VALUES (:numero_serie, :status)";
+            $stmt_insert = $pdo->prepare($insert_sql);
+
+            // Ignorer la première ligne si c'est un en-tête (optionnel)
+            $first_row = true;
+
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                if ($first_row) {
+                    $first_row = false; // Ignore l'en-tête
+                    continue;
+                }
+                // Assigner les valeurs du CSV (colonne 1: numero_serie, colonne 2: status)
+                $numero_serie = $data[0];
+                $status = isset($data[1]) ? $data[1] : 'disponible'; // Par défaut "disponible" si pas spécifié
+
+                // Exécuter l'insertion
+                $stmt_insert->execute([
+                    ':numero_serie' => $numero_serie,
+                    ':status' => $status
+                ]);
+            }
+            fclose($handle);
+            header("Location: admin.php?success=CSV importé avec succès");
+            exit();
+        } else {
+            echo "Erreur lors de l'ouverture du fichier CSV.";
+        }
     }
 }
 
@@ -204,6 +251,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>Aucune réservation en attente.</p>
             <?php endif; ?>
 
+            <!-- Formulaire d'importation CSV -->
+            <div class="import-csv">
+                <h2>Importer des PCs via CSV</h2>
+                <form action="admin.php" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="csv_file" accept=".csv" required>
+                    <button type="submit" name="import_csv" class="button import">Importer</button>
+                </form>
+                <?php if (isset($_GET['success'])): ?>
+                    <p style="color: green;"><?php echo htmlspecialchars($_GET['success']); ?></p>
+                <?php endif; ?>
+            </div>
+
             <!-- Section stock des PC -->
             <div class="pc-stock">
 
@@ -245,6 +304,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form action="admin.php" method="POST" style="display:inline;">
                         <button type="submit" name="prêt" class="button approve" value="1">Prêter</button>
                         <input type="hidden" name="pc_id" value="<?php echo $reservation['id']; ?>">
+                    </form>
+                    <form action="admin.php" method="POST" style="display:inline;">
+                        <button type="submit" name="delete_pending_reservation" class="button delete" value="1">Supprimer</button>
+                        <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
                     </form>
                 </li>
             <?php endforeach; ?>
