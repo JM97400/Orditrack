@@ -212,6 +212,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main>
     <section class="container">
         <div class="dashboard">
+        <img src="img/edn.png" alt="Logo edn" class="edn">
+
             <h1>Tableau de bord Administratif</h1>
             <h2>Réservations en attente</h2>
 

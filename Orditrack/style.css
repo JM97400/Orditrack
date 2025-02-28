@@ -1,9 +1,9 @@
 /* Style général */
 body {
-    font-family: 'Inter', Arial, sans-serif; /* Police tech pro */
+    font-family: 'Inter', Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #0a1120; /* Bleu-noir profond, très pro */
+    background-color: #0a1120;
     height: 100%;
 }
 
@@ -15,47 +15,30 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ZqY3YydXp5bzFtbGR2eXFmanJrbjBpM2E5Z3ZoODlrZHZubmlnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KX5nwoDX97AtPvKBF6/giphy.gif') no-repeat center/cover; /* Effet matriciel pro */
-    opacity: 0.08; /* Très subtil */
+    background: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ZqY3YydXp5bzFtbGR2eXFmanJrbjBpM2E5Z3ZoODlrZHZubmlnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KX5nwoDX97AtPvKBF6/giphy.gif') no-repeat center/cover;
+    opacity: 0.15;
     z-index: -1;
 }
 
 header {
-    background: linear-gradient(135deg, #1e3a8a 0%, #2a4d9c 100%); /* Dégradé bleu tech pro */
+    background: linear-gradient(135deg, #1e3a8a 0%, #2a4d9c 100%);
     padding: 20px 20px;
     line-height: 35px;
     display: flex;
-    justify-content: space-between; /* Ajusté pour permettre l'alignement */
+    justify-content: space-between;
     align-items: center;
     position: absolute;
     top: 0;
     right: 0;
     left: 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Ombre discrète */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 10;
 }
 
-.edn-header{
+.edn-header {
     height: 60px;
     width: 60px;
 }
-
-/* Conteneur des logos */
-/*.logo-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.logo-container img {
-    height: 40px;
-}
-
-.logo-container p {
-    margin-right: 15px;
-    font-size: 15px;
-    color: white;
-}*/
 
 .input-group {
     width: 95%;
@@ -76,7 +59,7 @@ header {
 
 /* Styles des boutons */
 .button {
-    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); /* Bleu tech pro */
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -92,7 +75,7 @@ header {
 .button:hover {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); /* Léger néon bleu */
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
 /* Conteneur principal */
@@ -157,6 +140,7 @@ input, select {
     font-size: 16px;
 }
 
+/* Bouton de soumission */
 button[type="submit"] {
     background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
     color: white;
@@ -177,75 +161,108 @@ button[type="submit"]:hover {
 }
 
 /* Tableau de bord */
+
+.edn{
+
+    height: 50px;
+    width: 50px;
+
+}
+
 .dashboard {
     width: 90%;
     margin: 0 auto;
     text-align: center;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    background: linear-gradient(135deg, #2d3748 0%, #111827 80%);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.dashboard::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+    z-index: -1;
+    animation: pulse 10s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
 }
 
 .dashboard h1 {
-    font-size: 36px; /* Légèrement plus grand */
-    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); /* Dégradé bleu tech */
-    -webkit-background-clip: text; /* Applique le dégradé au texte */
-    -webkit-text-fill-color: transparent; /* Rend le texte transparent pour voir le dégradé */
+    font-size: 36px;
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 10px;
     margin-top: 15px;
     font-weight: 700;
-    text-transform: uppercase; 
-    letter-spacing: 1.5px; /* Espacement entre lettres */
-    text-shadow: 0 2px 4px rgba(59, 130, 246, 0.3); /* Ombre subtile tech */
-    padding: 5px 15px; /* Légère marge interne */
-    display: inline-block; /* Permet au padding de s’appliquer correctement */
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 0 3px 6px rgba(59, 130, 246, 0.5);
+    padding: 5px 15px;
+    display: inline-block;
 }
 
 h2 {
     font-size: 28px;
-    color: #333;
+    color: #ffffff;
     margin-bottom: 20px;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 
 .reservation-table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: rgba(31, 41, 55, 0.85);
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
 .reservation-table th, .reservation-table td {
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(255, 255, 255, 0.4);
     text-align: center;
     font-size: 16px;
+    color: #d1d5db; /* Gris clair pour lisibilité */
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 
 .reservation-table th {
-    background-color: #1a73e8;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2a4d9c 100%);
     color: white;
 }
 
 .reservation-table td {
-    background-color: #f9f9f9;
+    background: rgba(31, 41, 55, 0.85);
 }
 
-.reservation-table tr:nth-child(even) {
-    background-color: #f4f4f9;
+.reservation-table tr:nth-child(even) td {
+    background: rgba(17, 24, 39, 0.85);
 }
 
-.reservation-table tr:hover {
-    background-color: #e0e0e0;
+.reservation-table tr:hover td {
+    background: rgba(59, 130, 246, 0.25);
+    transition: background 0.3s ease;
 }
 
 /* Boutons spécifiques (plus petits) */
 .approve {
-    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); /* Vert pro */
-    padding: 8px 16px; /* Plus petit */
-    font-size: 14px; /* Police réduite */
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+    padding: 8px 16px;
+    font-size: 14px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -256,7 +273,7 @@ h2 {
 }
 
 .reject {
-    background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); /* Rouge pro */
+    background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
     padding: 8px 16px;
     font-size: 14px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -269,7 +286,7 @@ h2 {
 }
 
 .logout {
-    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); /* Gris métallique pro */
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
     padding: 12px;
     font-size: 14px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -292,6 +309,30 @@ h2 {
 .pc-stock > div {
     width: 32%;
     margin: 0 10px;
+    background: linear-gradient(135deg, #2d3748 0%, #111827 80%);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    border: 3px solid rgba(59, 130, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.pc-stock > div::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+    z-index: -1;
+    animation: pulse 10s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
 }
 
 ul {
@@ -304,11 +345,15 @@ li {
     display: flex;
     align-items: center;
     justify-content: space-around;
+    color: #d1d5db; /* Gris clair pour les références et dates */
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 
 li span.reference {
     flex-grow: 1;
     margin-right: 3px;
+    color: #d1d5db; /* Gris clair */
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 
 .button-container {
@@ -358,8 +403,8 @@ li span.reference {
 .button.remise {
     background: linear-gradient(135deg, #facc15 0%, #ca8a04 100%);
     color: white;
-    padding: 8px 16px; /* Plus petit */
-    font-size: 14px; /* Police réduite */
+    padding: 8px 16px;
+    font-size: 14px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
@@ -369,7 +414,7 @@ li span.reference {
     box-shadow: 0 4px 10px rgba(250, 204, 21, 0.4);
 }
 
-.button.retour { /* Ajout spécifique pour "Retour" */
+.button.retour {
     background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
     padding: 8px 16px;
     font-size: 14px;
@@ -380,9 +425,10 @@ li span.reference {
     background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(107, 114, 128, 0.4);
+    
 }
 
-.button.prêt { /* Ajout spécifique pour "Prêter" */
+.button.prêt {
     background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
     padding: 8px 16px;
     font-size: 14px;
@@ -401,40 +447,98 @@ li span.reference + .button-container {
 
 .stats-container {
     position: absolute;
-    top: 10px;
+    top: 65px;
     right: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 14px;
+    background: rgba(59, 130, 246, 1);
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
     text-align: right;
-    margin-top: 150px;
+    margin-top: 80px;
     margin-right: 70px;
+    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 5;
 }
 
 .stats-container p {
     margin: 5px 0;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 
 /* Alignement du bouton "Historique" à gauche */
 .header-content {
     display: flex;
-    justify-content: space-between; /* Bouton "Historique" à gauche, "Déconnexion" à droite */
+    justify-content: space-between;
     width: 100%;
 }
 
 /* Alignement des sections PC SAV et Import CSV */
 .pc-sav {
     float: left;
-    width: 45%; /* Largeur raisonnable pour éviter chevauchement */
+    width: 45%;
     margin-right: 10px;
+    background: linear-gradient(135deg, #2d3748 0%, #111827 80%);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    border: 3px solid rgba(59, 130, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+.pc-sav::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+    z-index: -1;
+    animation: pulse 10s infinite ease-in-out;
 }
 
 .import-csv {
     float: right;
-    width: 45%; /* Largeur raisonnable pour éviter chevauchement */
+    width: 45%;
     margin-left: 10px;
+    background: linear-gradient(135deg, #2d3748 0%, #111827 80%);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    border: 3px solid rgba(59, 130, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+    margin-right: 10px;
+    margin-top: 20px;
+    
+}
+
+.import-csv::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+    z-index: -1;
+    animation: pulse 10s infinite ease-in-out;
+}
+
+.import-csv a {
+    color: #d1d5db; /* Gris clair pour le lien "Mode d'emploi" */
+    text-decoration: none;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+.import-csv a:hover {
+    color: #60a5fa; /* Bleu clair au survol */
+    text-decoration: underline;
 }
 
 /* clearfix pour éviter problèmes de mise en page */
@@ -447,7 +551,7 @@ li span.reference + .button-container {
 /* Centrage du logo Orditrack */
 .logo-orditrack {
     text-align: center;
-    margin-bottom: -80px;  /*Espacement avec le logo EDN */
+    margin-bottom: -80px;
 }
 
 /* Alignement du logo EDN à droite */
