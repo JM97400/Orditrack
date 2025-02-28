@@ -351,7 +351,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
              <!-- Formulaire d'importation CSV -->
              <div class="import-csv">
-             <h2>Importer des PCs via CSV</h2><a href="emploi.html" target="_blank">Mode d'emploi</a>
+             <h2>Importer des PCs via CSV</h2><a href="emploi-csv.html" target="_blank">Mode d'emploi</a>
                 <form action="admin.php" method="POST" enctype="multipart/form-data">
                     <input type="file" name="csv_file" accept=".csv" required>
                     <button type="submit" name="import_csv" class="button import">Importer</button>
