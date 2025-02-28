@@ -49,6 +49,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <header>
     <a href="index.php" class="button">Retour à l'accueil</a>
+    <img src="img/edn.png" alt="Logo edn" class="edn-header">
+
 </header>
 
 <div class="container">

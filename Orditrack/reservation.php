@@ -85,11 +85,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <div class="navbar">
-        <button class="logout-button" onclick="window.location.href='logout.php'">Déconnecter</button>
+        <div class="logo-container">
+            <img src="img/edn.png" alt="Logo edn" class="logo-edn">
+        </div>
+        <button class="button logout-button" onclick="window.location.href='logout.php'">Déconnexion</button>
     </div>
 
     <h2>Réservation de PC</h2>
-    <p>Il y a actuellement <strong><?php echo htmlspecialchars($available_pcs); ?></strong> PC disponibles.</p>
+    <p class="echo">Il y a actuellement <strong><?php echo htmlspecialchars($available_pcs); ?></strong> PC disponibles.</p>
 
     <form method="POST" action="">
         <label for="pc_id">Choisir un PC à réserver :</label>
