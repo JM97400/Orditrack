@@ -6,48 +6,66 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: #0a1120;
     color: #333;
     line-height: 1.6;
     padding: 20px;
 }
 
+/* Fond avec vidéo qualitative */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ZqY3YydXp5bzFtbGR2eXFmanJrbjBpM2E5Z3ZoODlrZHZubmlnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KX5nwoDX97AtPvKBF6/giphy.gif') no-repeat center/cover; /* Vidéo remplacée par un GIF qualitatif de particules tech */
+    opacity: 0.08; /* Subtil mais visible */
+    z-index: -1;
+}
+
 h2 {
     font-size: 2rem;
-    color: #333;
+    color: #d1d5db;
     margin-bottom: 20px;
 }
 
 p {
     font-size: 1.1rem;
     margin-bottom: 20px;
-    color: #555;
+    color: #9ca3af;
 }
 
 /* Navbar */
 .navbar {
-    background-color: #007bff;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2a4d9c 100%);
     padding: 10px 20px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .logout-button {
-    background-color: #ff4136;
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
     color: white;
     padding: 8px 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.3s ease;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .logout-button:hover {
-    background-color: #ff2e00;
+    background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(107, 114, 128, 0.4);
 }
 
 /* Formulaire de réservation */
@@ -67,36 +85,44 @@ form label {
     display: block;
 }
 
-form select {
+form select,
+form input[type="datetime-local"] {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 1rem;
     border-radius: 5px;
     border: 1px solid #ddd;
     margin-bottom: 20px;
     background-color: #f9f9f9;
     color: #333;
+    transition: border-color 0.3s ease;
 }
 
-form select:focus {
-    border-color: #007bff;
+form select:focus,
+form input[type="datetime-local"]:focus {
+    border-color: #3b82f6;
     outline: none;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.4);
 }
 
 form button {
-    background-color: #007bff;
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
     color: white;
     padding: 12px 20px;
     font-size: 1rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     width: 100%;
-    transition: background-color 0.3s ease;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 form button:hover {
-    background-color: #0056b3;
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
 /* Responsivité */
@@ -116,21 +142,4 @@ form button:hover {
     form button {
         font-size: 0.9rem;
     }
-}
-
-/* Formulaire de réservation */
-form input[type="datetime-local"] {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    color: #333;
-}
-
-form input[type="datetime-local"]:focus {
-    border-color: #007bff;
-    outline: none;
 }

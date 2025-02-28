@@ -1,0 +1,153 @@
+/* Réinitialisation */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: #0a1120; /* Bleu-noir profond */
+    color: black;
+    line-height: 1.6;
+    padding: 40px;
+}
+
+/* Fond avec GIF discret */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ZqY3YydXp5bzFtbGR2eXFmanJrbjBpM2E5Z3ZoODlrZHZubmlnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KX5nwoDX97AtPvKBF6/giphy.gif') no-repeat center/cover;
+    opacity: 0.08;
+    z-index: -1;
+}
+
+/* Conteneur principal */
+.tutorial-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.9); /* Transparence subtile */
+    padding: 70px 30px 30px 30px; /* Augmenté padding-top pour éviter chevauchement */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative; /* Pour positionner le bouton par rapport au conteneur */
+}
+
+/* Bouton Accueil */
+.home-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); /* Bleu tech pro */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.home-button:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+/* Titres */
+h1 {
+    font-size: 32px;
+    color: #3b82f6; /* Bleu tech */
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 24px;
+    color: #2a4d9c; /* Bleu sombre pro */
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Paragraphes */
+.intro {
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #9ca3af; /* Gris tech */
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+/* Listes */
+ul, ol {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+ul li, ol li {
+    margin-bottom: 10px;
+}
+
+ul li {
+    list-style-type: disc;
+}
+
+ol li {
+    list-style-type: decimal;
+}
+
+ul ul, ol ol {
+    margin-left: 30px;
+    margin-top: 10px;
+}
+
+/* Mise en valeur */
+.highlight {
+    color: #3b82f6; /* Bleu tech */
+    font-weight: 600;
+}
+
+code {
+    background: #1e3a8a; /* Bleu sombre */
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+pre {
+    background: #161b22; /* Fond sombre tech */
+    color: #d1d5db;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 10px 0;
+    font-family: 'Courier New', Courier, monospace;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Astuce */
+.tip {
+    font-style: italic;
+    color: #22c55e; /* Vert pro */
+    margin-top: 20px;
+    text-align: center;
+}
+
+.tip strong {
+    color: #15803d;
+}
+
+/* Sections */
+.step {
+    margin-bottom: 30px;
+}

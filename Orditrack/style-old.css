@@ -1,0 +1,298 @@
+/* Style général */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    height: 100%;
+}
+
+header {
+    background-color: #1a73e8;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+}
+
+/* Conteneur des logos */
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logo-container img {
+    height: 40px;
+}
+
+.logo-container p {
+    margin-right: 15px;
+    font-size: 15px;
+    color: white;
+}
+
+.ordi {
+    height: 100px !important;
+    margin: 0;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+/* Styles des boutons */
+.button {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.button:hover {
+    background-color: #e68900;
+}
+
+/* Conteneur principal */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 80vh;
+    padding-top: 120px;
+}
+
+.content img {
+    height: 400px;
+}
+
+/* Contenu principal */
+.content {
+    text-align: center;
+    background-color: #ffffff;
+    padding-top: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    margin-top: 5px;
+}
+
+.logo-below-title {
+    margin-top: 0px;
+    max-width: 100%;
+    height: auto;
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    margin-top: 35px;
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 0px;
+}
+
+form {
+    background-color: #f4f4f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button[type="submit"] {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button[type="submit"]:hover {
+    background-color: #0057e7;
+}
+
+/*///////////// Tableau de bord////////////// */
+.dashboard {
+    width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1, h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.reservation-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-table th, .reservation-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 16px;
+}
+
+.reservation-table th {
+    background-color: #1a73e8;
+    color: white;
+}
+
+.reservation-table td {
+    background-color: #f9f9f9;
+}
+
+.reservation-table tr:nth-child(even) {
+    background-color: #f4f4f9;
+}
+
+.reservation-table tr:hover {
+    background-color: #e0e0e0;
+}
+
+.approve {
+    background-color: #4caf50;
+}
+
+.approve:hover {
+    background-color: #45a049;
+}
+
+.reject {
+    background-color: #f44336;
+}
+
+.reject:hover {
+    background-color: #e53935;
+}
+
+.logout {
+    background-color: #1a73e8;
+    padding: 12px;
+    font-size: 14px;
+}
+
+.logout:hover {
+    background-color: #0057e7;
+}
+
+/* Mise en page stock */
+.pc-stock {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.pc-stock > div {
+    width: 32%; /* Les trois colonnes prennent chacune 32% de la largeur */
+    margin: 0 10px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+li span.reference {
+    flex-grow: 1;
+    margin-right: 3px; /* espace entre la référence et les boutons */
+}
+
+.button-container {
+    display: flex;
+    gap: 3px; /* Espacement encore plus réduit */
+}
+
+.button.approve {
+    background-color: #6dbf6f;
+}
+
+.button.delete {
+    background-color: pink;
+    color: black;
+}
+
+.button.logout{
+    background-color: purple;
+}
+
+.button.sav {
+    background-color: #f39c12;
+    color: white;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.button.remise {
+    background-color: yellow;
+    color: blue;
+}
+
+li span.reference + .button-container {
+    margin-left: 0px; /* Aucun espace supplémentaire entre la référence et les boutons */
+}
+
+.stats-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: right;
+    margin-top: 170px;
+    margin-right: 70px;
+}
+
+.stats-container p {
+    margin: 5px 0;
+}

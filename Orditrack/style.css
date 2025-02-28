@@ -1,26 +1,40 @@
 /* Style général */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', Arial, sans-serif; /* Police tech pro */
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    background-color: #0a1120; /* Bleu-noir profond, très pro */
     height: 100%;
 }
 
+/* Fond avec GIF discret */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ZqY3YydXp5bzFtbGR2eXFmanJrbjBpM2E5Z3ZoODlrZHZubmlnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KX5nwoDX97AtPvKBF6/giphy.gif') no-repeat center/cover; /* Effet matriciel pro */
+    opacity: 0.08; /* Très subtil */
+    z-index: -1;
+}
+
 header {
-    background-color: #1a73e8;
+    background: linear-gradient(135deg, #1e3a8a 0%, #2a4d9c 100%); /* Dégradé bleu tech pro */
     padding: 20px 40px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* Ajusté pour permettre l'alignement */
     align-items: center;
     position: absolute;
     top: 0;
     right: 0;
     left: 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Ombre discrète */
 }
 
 /* Conteneur des logos */
-.logo-container {
+/*.logo-container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,6 +49,10 @@ header {
     margin-right: 15px;
     font-size: 15px;
     color: white;
+}*/
+
+.input-group {
+    width: 95%;
 }
 
 .ordi {
@@ -52,18 +70,23 @@ header {
 
 /* Styles des boutons */
 .button {
-    background-color: #ff9800;
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); /* Bleu tech pro */
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 24px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 6px;
     text-decoration: none;
     font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .button:hover {
-    background-color: #e68900;
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); /* Léger néon bleu */
 }
 
 /* Conteneur principal */
@@ -82,7 +105,7 @@ header {
 /* Contenu principal */
 .content {
     text-align: center;
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.7);
     padding-top: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -92,9 +115,13 @@ header {
 }
 
 .logo-below-title {
-    margin-top: 0px;
     max-width: 100%;
     height: auto;
+}
+
+.logo.edn {
+    height: 80px;
+    width: 80px;
 }
 
 h1 {
@@ -125,21 +152,25 @@ input, select {
 }
 
 button[type="submit"] {
-    background-color: #1a73e8;
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
     color: white;
     border: none;
-    padding: 12px;
+    padding: 14px;
     width: 100%;
     font-size: 16px;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 button[type="submit"]:hover {
-    background-color: #0057e7;
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
-/*///////////// Tableau de bord////////////// */
+/* Tableau de bord */
 .dashboard {
     width: 90%;
     margin: 0 auto;
@@ -150,7 +181,22 @@ button[type="submit"]:hover {
     border-radius: 8px;
 }
 
-h1, h2 {
+.dashboard h1 {
+    font-size: 36px; /* Légèrement plus grand */
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); /* Dégradé bleu tech */
+    -webkit-background-clip: text; /* Applique le dégradé au texte */
+    -webkit-text-fill-color: transparent; /* Rend le texte transparent pour voir le dégradé */
+    margin-bottom: 10px;
+    margin-top: 15px;
+    font-weight: 700;
+    text-transform: uppercase; 
+    letter-spacing: 1.5px; /* Espacement entre lettres */
+    text-shadow: 0 2px 4px rgba(59, 130, 246, 0.3); /* Ombre subtile tech */
+    padding: 5px 15px; /* Légère marge interne */
+    display: inline-block; /* Permet au padding de s’appliquer correctement */
+}
+
+h2 {
     font-size: 28px;
     color: #333;
     margin-bottom: 20px;
@@ -189,30 +235,44 @@ h1, h2 {
     background-color: #e0e0e0;
 }
 
+/* Boutons spécifiques (plus petits) */
 .approve {
-    background-color: #4caf50;
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); /* Vert pro */
+    padding: 8px 16px; /* Plus petit */
+    font-size: 14px; /* Police réduite */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .approve:hover {
-    background-color: #45a049;
+    background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
 }
 
 .reject {
-    background-color: #f44336;
+    background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%); /* Rouge pro */
+    padding: 8px 16px;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .reject:hover {
-    background-color: #e53935;
+    background: linear-gradient(135deg, #991b1b 0%, #ef4444 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
 }
 
 .logout {
-    background-color: #1a73e8;
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); /* Gris métallique pro */
     padding: 12px;
     font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .logout:hover {
-    background-color: #0057e7;
+    background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(107, 114, 128, 0.4);
 }
 
 /* Mise en page stock */
@@ -224,7 +284,7 @@ h1, h2 {
 }
 
 .pc-stock > div {
-    width: 32%; /* Les trois colonnes prennent chacune 32% de la largeur */
+    width: 32%;
     margin: 0 10px;
 }
 
@@ -242,41 +302,95 @@ li {
 
 li span.reference {
     flex-grow: 1;
-    margin-right: 3px; /* espace entre la référence et les boutons */
+    margin-right: 3px;
 }
 
 .button-container {
     display: flex;
-    gap: 3px; /* Espacement encore plus réduit */
+    gap: 3px;
 }
 
 .button.approve {
-    background-color: #6dbf6f;
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+    padding: 8px 16px;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .button.delete {
-    background-color: pink;
-    color: black;
+    background: linear-gradient(135deg, #f87171 0%, #b91c1c 100%);
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.button.logout{
-    background-color: purple;
+.button.delete:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #f87171 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(248, 113, 113, 0.4);
+}
+
+.button.logout {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
 }
 
 .button.sav {
-    background-color: #f39c12;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     color: white;
     padding: 5px 10px;
     font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.button.sav:hover {
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
 }
 
 .button.remise {
-    background-color: yellow;
-    color: blue;
+    background: linear-gradient(135deg, #facc15 0%, #ca8a04 100%);
+    color: white;
+    padding: 8px 16px; /* Plus petit */
+    font-size: 14px; /* Police réduite */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.button.remise:hover {
+    background: linear-gradient(135deg, #ca8a04 0%, #facc15 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(250, 204, 21, 0.4);
+}
+
+.button.retour { /* Ajout spécifique pour "Retour" */
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    padding: 8px 16px;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.button.retour:hover {
+    background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(107, 114, 128, 0.4);
+}
+
+.button.prêt { /* Ajout spécifique pour "Prêter" */
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+    padding: 8px 16px;
+    font-size: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.button.prêt:hover {
+    background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
 }
 
 li span.reference + .button-container {
-    margin-left: 0px; /* Aucun espace supplémentaire entre la référence et les boutons */
+    margin-left: 0px;
 }
 
 .stats-container {
@@ -295,4 +409,43 @@ li span.reference + .button-container {
 
 .stats-container p {
     margin: 5px 0;
+}
+
+/* Alignement du bouton "Historique" à gauche */
+.header-content {
+    display: flex;
+    justify-content: space-between; /* Bouton "Historique" à gauche, "Déconnexion" à droite */
+    width: 100%;
+}
+
+/* Alignement des sections PC SAV et Import CSV */
+.pc-sav {
+    float: left;
+    width: 45%; /* Largeur raisonnable pour éviter chevauchement */
+    margin-right: 10px;
+}
+
+.import-csv {
+    float: right;
+    width: 45%; /* Largeur raisonnable pour éviter chevauchement */
+    margin-left: 10px;
+}
+
+/* clearfix pour éviter problèmes de mise en page */
+.dashboard::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Centrage du logo Orditrack */
+.logo-orditrack {
+    text-align: center;
+    margin-bottom: -80px;  /*Espacement avec le logo EDN */
+}
+
+/* Alignement du logo EDN à droite */
+.logo-edn {
+    text-align: right;
+    margin-right: 10px;
 }
