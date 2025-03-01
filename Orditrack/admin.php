@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="dashboard">
         <img src="img/edn.png" alt="Logo edn" class="edn">
 
-            <h1>Tableau de bord Administratif</h1>
+            <h1>Tableau de bord Administratif</h1><br>
             <h2>Réservations en attente</h2>
 
             <!-- Tableau des réservations -->
