@@ -64,13 +64,12 @@ if (isset($_GET['export_history'])) {
     // Ouvrir la sortie comme un "fichier"
     $output = fopen("php://output", "w");
 
-    // Ajouter les en-têtes du tableau
-    fputcsv($output, array('ID', 'Utilisateur', 'PC', 'Date Debut', 'Date Retour', 'Statut'), "\t");
+    // Ajouter les en-têtes du tableau (sans ID)
+    fputcsv($output, array('Utilisateur', 'PC', 'Date Debut', 'Date Retour', 'Statut'), "\t");
 
-    // Ajouter les données
+    // Ajouter les données (sans la colonne ID)
     foreach ($all_reservations as $row) {
         fputcsv($output, array(
-            $row['id'],
             $row['user'],
             $row['pc'],
             $row['date_debut'],
