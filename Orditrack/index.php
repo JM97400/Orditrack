@@ -39,8 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
 <header>
     <!-- Liens pour accéder aux pages de connexion -->
     <div class="button-container">
-        <a href="login.php?role=user" class="button">Réserver un PC</a>
-        <a href="login.php?role=admin" class="button">Accès Admin</a>
+        <a href="login.php?role=admin">Admin</a>
     </div>
 </header>
 
@@ -48,7 +47,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
     <div class="content">
         <h1>Bienvenue sur le système de prêt de PC</h1>
         <p>Réservez un ordinateur portable en quelques clics.</p>
-        <!-- ogo Orditrack centré -->
+        <a href="login.php?role=user" class="button">Réserver un PC</a>
+        <!-- Logo Orditrack centré -->
         <div class="logo-orditrack">
             <img src="img/orditrack.png" alt="Logo Système de Prêt" class="logo-below-title">
         </div>

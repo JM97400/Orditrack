@@ -7,7 +7,7 @@ body {
     height: 100%;
 }
 
-/* Fond avec GIF discret */
+/* Fond index */
 body::after {
     content: '';
     position: fixed;
@@ -85,11 +85,33 @@ header {
     justify-content: center;
     align-items: flex-start;
     height: 80vh;
-    padding-top: 120px;
+    padding-top: 110px;
 }
 
 .content img {
-    height: 400px;
+    height: 350px;
+}
+
+/* Recadra bouton réverver PC */
+.content .button {
+    margin-top: 30px; /* Descend le bouton "Réserver un PC" */
+    display: inline-block; /* Assure que le bouton reste dans le flux */
+    position: relative; /* Permet au z-index de fonctionner */
+    z-index: 10; /* Place le bouton au-dessus des logos */
+    display: inline-block; /* Garde le bouton dans le flux */
+    padding: 24px 38px; 
+}
+
+.button-container a {
+    color: white; /* Met le mot "admin" en blanc */
+    text-decoration: none; /* Supprime le soulignement */
+    font-size: 16px; /* Taille cohérente avec le design */
+}
+
+.content .button:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
 }
 
 /* Contenu principal */
@@ -104,9 +126,12 @@ header {
     margin-top: 5px;
 }
 
+
+
 .logo-below-title {
     max-width: 100%;
     height: auto;
+    margin-top: -60px;
 }
 
 .logo.edn {
@@ -558,7 +583,7 @@ li span.reference + .button-container {
 /* Centrage du logo Orditrack */
 .logo-orditrack {
     text-align: center;
-    margin-bottom: -80px;
+    margin-bottom: -100px;
 }
 
 /* Alignement du logo EDN à droite */
@@ -566,3 +591,6 @@ li span.reference + .button-container {
     text-align: right;
     margin-right: 10px;
 }
+
+/*////////////////////////////////////////////////////////*/
+
