@@ -1,0 +1,176 @@
+/* Style général */
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #0a1120;
+    height: 100%;
+}
+
+/* Fond de la page */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ZqY3YydXp5bzFtbGR2eXFmanJrbjBpM2E5Z3ZoODlrZHZubmlnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KX5nwoDX97AtPvKBF6/giphy.gif') no-repeat center/cover;
+    opacity: 0.15;
+    z-index: -1;
+}
+
+/* Conteneur principal */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Conteneur du tableau */
+.history-dashboard {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+    background: linear-gradient(135deg, #2d3748 0%, #111827 80%);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    text-align: center;
+}
+
+.history-dashboard::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+    z-index: -1;
+    animation: pulse 10s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+/* Titre */
+.history-dashboard h1 {
+    font-size: 36px;
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 30px;
+    margin-top: 0;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-shadow: 0 3px 6px rgba(59, 130, 246, 0.5);
+    padding: 5px 15px;
+    display: inline-block;
+}
+
+/* Bouton Fermer */
+.button.close {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.button.close:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
+
+/* Style du tableau */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.history-table th, .history-table td {
+    padding: 16px;
+    text-align: left;
+    font-size: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.history-table th {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2a4d9c 100%);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Style des champs de filtrage */
+.filter-row th {
+    background: #f1f5f9;
+    padding: 8px;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.filter-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.history-table td {
+    background: #ffffff;
+    color: #1f2937;
+    border-right: 1px solid #e2e8f0;
+}
+
+.history-table td:last-child {
+    border-right: none;
+}
+
+.history-table tr:nth-child(even) td {
+    background: #f8fafc;
+}
+
+.history-table tr:hover td {
+    background: #e1e7ff;
+    transition: background 0.3s ease;
+}
+
+p {
+    font-size: 16px;
+    color: #d1d5db;
+    text-align: center;
+    margin: 20px 0;
+}

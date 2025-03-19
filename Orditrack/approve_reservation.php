@@ -22,6 +22,9 @@ if (isset($_GET['id'])) {
     $reservation = $stmt->fetch();
 
     if ($reservation) {
+        // Générer le numéro de réservation au format RES-XXXX
+        $numero_reservation = "RES-" . str_pad($reservation_id, 4, "0", STR_PAD_LEFT);
+
         // Mise à jour du statut de la réservation
         $update_sql = "UPDATE reservations SET status = 'validé' WHERE id = ?";
         $update_stmt = $pdo->prepare($update_sql);
@@ -37,6 +40,7 @@ if (isset($_GET['id'])) {
         $subject = "Réservation approuvée - Votre PC";
         $message = "Bonjour " . htmlspecialchars($reservation['username']) . ",\n\n" .
                    "Votre réservation de PC a été approuvée !\n" .
+                   "Numéro de réservation : " . htmlspecialchars($numero_reservation) . "\n" .
                    "Date de début : " . htmlspecialchars($reservation['date_debut']) . "\n" .
                    "Date de retour : " . htmlspecialchars($reservation['date_retour']) . "\n\n" .
                    "Merci de votre réservation.\n\n" .

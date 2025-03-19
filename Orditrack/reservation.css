@@ -93,9 +93,10 @@ form {
 
 form label {
     font-size: 1rem;
-    color: #333;
+    color: rgb(24, 24, 88);
     margin-bottom: 10px;
     display: block;
+    font-weight: bold;
 }
 
 form select,
@@ -107,7 +108,7 @@ form input[type="datetime-local"] {
     border: 1px solid #ddd;
     margin-bottom: 20px;
     background-color: #f9f9f9;
-    color: #333;
+    color: rgb(69, 67, 67);
     transition: border-color 0.3s ease;
 }
 

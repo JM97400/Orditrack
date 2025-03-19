@@ -17,12 +17,12 @@ body::after {
     height: 100%;
     background: url('https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ZqY3YydXp5bzFtbGR2eXFmanJrbjBpM2E5Z3ZoODlrZHZubmlnNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KX5nwoDX97AtPvKBF6/giphy.gif') no-repeat center/cover;
     opacity: 0.15;
-    z-index: -1;
+    z-index: -1;    
 }
 
 header {
     background: linear-gradient(135deg, #1e3a8a 0%, #2a4d9c 100%);
-    padding: 20px 20px;
+    padding: 10px 10px;
     line-height: 35px;
     display: flex;
     justify-content: space-between;
@@ -103,7 +103,7 @@ header {
 }
 
 .button-container a {
-    color: white; /* Met le mot "admin" en blanc */
+    color: lightgray;
     text-decoration: none; /* Supprime le soulignement */
     font-size: 16px; /* Taille cohérente avec le design */
 }
@@ -149,13 +149,17 @@ p {
     font-size: 16px;
     margin-bottom: 0px;
 }
+/*//////////////Formulaire/////*/
 
 form {
     background-color: transparent;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
 }
+
+/*/////////////////*/
 
 input, select {
     width: 100%;
@@ -195,6 +199,18 @@ form[style="display:inline"] {
 }
 
 /*////////////// Tableau de bord /////////////////*/
+
+.button.history {
+    position: absolute; /* Position absolue pour le contrôler indépendamment */
+    left: 20px; /* Décalage à gauche depuis le bord */
+    top: 20px; /* Ajustement vertical pour aligner avec le haut du header */
+}
+
+.telecharger {
+    height: 40px;
+    position: absolute; /* Position absolue pour le contrôler indépendamment */
+    left: 150px; /
+}
 
 .edn { /*logo edn*/
     height: 50px;
@@ -327,9 +343,12 @@ h2 {
 
 .logout {
     background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-    padding: 12px; /* Uniformisé à 12px vertical */
+    padding: 4px; /* Uniformisé à 12px vertical */
     font-size: 14px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    margin-left: 30px;
+    margin-right: 10px;
+
 }
 
 .logout:hover {
@@ -594,3 +613,51 @@ li span.reference + .button-container {
 
 /*////////////////////////////////////////////////////////*/
 
+/*/////Barre de recherche///////////*/
+
+.header-content {
+    display: flex;
+    justify-content: space-between; /* Assure que les éléments sont espacés, avec la recherche à droite */
+    align-items: center;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Pousse la barre vers la droite */
+    margin-right: 10px; /* Espace avant le bouton Déconnexion */
+}
+
+.search-form input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ccc; /* Bordure grise */
+    border-radius: 4px;
+    font-size: 14px;
+    background: transparent; /* Pas de fond */
+    color: #fff; /* Texte blanc pour contraste sur fond sombre */
+}
+
+.search-form input[type="text"]::placeholder {
+    color: #aaa; /* Placeholder en gris clair */
+}
+
+.button.search {
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.button.search:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+}
+
+select {
+    width: 100%;
+    padding: 5px;
+    margin-top: 10px;
+}
