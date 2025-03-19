@@ -3,8 +3,8 @@
 
 $host = 'localhost';
 $dbname = 'gestion_pret_pc';
-$username = 'root'; // À modifier selon votre config
-$password = ''; // À modifier selon votre config
+$username = 'root'; // À modifier selon config
+$password = ''; // À modifier selon config
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);

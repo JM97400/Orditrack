@@ -120,7 +120,10 @@ if (isset($_GET['export_history'])) {
     $output = fopen("php://output", "w");
     fputcsv($output, array('Utilisateur', 'PC', 'Date Debut', 'Date Retour', 'Statut'), "\t");
     foreach ($all_reservations as $row) {
-        fputcsv($output, array($row['user'], $row['pc'], $row['date_debut'], $row['date_retour'], $row['status']), "\t");
+        // Formater les dates au format français (jj/mm/aaaa hh:mm)
+        $date_debut = (new DateTime($row['date_debut']))->format('d/m/Y H:i');
+        $date_retour = (new DateTime($row['date_retour']))->format('d/m/Y H:i');
+        fputcsv($output, array($row['user'], $row['pc'], $date_debut, $date_retour, $row['status']), "\t");
     }
     fclose($output);
     exit();
@@ -223,7 +226,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -268,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h1>Tableau de bord Administratif</h1><br>
             <h2>Réservations en attente</h2>
 
-            <!-- Tableau des réservations -->
+            <!-- ///////////Tableau des réservations///////////////////-->
             <?php if (count($reservations) > 0): ?>
             <table class="reservation-table">
                 <thead>
@@ -339,11 +341,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <li>
                                     <?php echo htmlspecialchars($pc['numero_serie']); ?>
                                     <form action="admin.php" method="POST" style="display:inline;">
-                                        <button type="submit" name="sav" class="button sav" value="1">Mettre en SAV</button>
+                                        <button type="submit" name="sav" class="button sav">Mettre en SAV</button>
                                         <input type="hidden" name="pc_id" value="<?php echo $pc['id']; ?>">
                                     </form>
                                     <form action="admin.php" method="POST" style="display:inline;">
-                                        <button type="submit" name="delete" class="button delete" value="1">Supprimer</button>
+                                        <button type="submit" name="delete" class="button delete">Supprimer</button>
                                         <input type="hidden" name="pc_id" value="<?php echo $pc['id']; ?>">
                                     </form>
                                 </li>
@@ -383,11 +385,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <?php echo htmlspecialchars($reservation['numero_reservation']); ?><br>
                                     (Utilisateur : <?php echo htmlspecialchars($reservation['user']); ?>, Date de début : <?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y H:i')); ?>)
                                     <form action="admin.php" method="POST" style="display:inline;">
-                                        <button type="submit" name="prêt" class="button approve" value="1">Prêter</button>
+                                        <button type="submit" name="prêt" class="button approve">Prêter</button>
                                         <input type="hidden" name="pc_id" value="<?php echo $reservation['id']; ?>">
                                     </form>
                                     <form action="admin.php" method="POST" style="display:inline;">
-                                        <button type="submit" name="delete_pending_reservation" class="button delete" value="1">Supprimer</button>
+                                        <button type="submit" name="delete_pending_reservation" class="button delete">Supprimer</button>
                                         <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
                                     </form>
                                 </li>
@@ -431,7 +433,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <input type="hidden" name="pc_id" value="<?php echo $pc['reservation_id']; ?>">
                                     </form>
                                     <form action="admin.php" method="POST" style="display:inline;">
-                                        <button type="submit" name="delete_reservation" class="button delete" value="1">Supprimer</button>
+                                        <button type="submit" name="delete_reservation" class="button delete">Supprimer</button>
                                         <input type="hidden" name="reservation_id" value="<?php echo $pc['reservation_id']; ?>">
                                     </form>
                                 </li>
@@ -470,7 +472,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <li>
                                 <?php echo htmlspecialchars($pc['numero_serie']); ?>
                                 <form action="admin.php" method="POST" style="display:inline;">
-                                    <button type="submit" name="remise_en_stock" class="button remise" value="1">Remise en stock</button>
+                                    <button type="submit" name="remise_en_stock" class="button remise">Remise en stock</button>
                                     <input type="hidden" name="pc_id" value="<?php echo $pc['id']; ?>">
                                 </form>
                             </li>
