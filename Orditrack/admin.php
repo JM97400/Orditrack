@@ -6,10 +6,10 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-// Connexion à la base de données pour récupérer les réservations
+// Connexion à la base de données pour récupérer les réservations/////
 require 'config.php';
 
-// Récupérer la valeur de la recherche si elle existe
+// Récupérer la valeur de la recherche si elle existe///////
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Convertir la recherche en format date SQL si elle ressemble à jj/mm/aaaa
@@ -18,7 +18,7 @@ if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $search, $matches)) {
     $search_date = "{$matches[3]}-{$matches[2]}-{$matches[1]}"; // Convertit en aaaa-mm-jj
 }
 
-// Récupérer les réservations en attente avec filtre de recherche
+// Récupérer les réservations en attente avec filtre de recherche/////////
 $sql = "SELECT r.id, u.username AS user, p.numero_serie AS pc, r.date_debut, r.date_retour, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation
         FROM reservations r
         JOIN users u ON r.id_user = u.id
@@ -60,14 +60,14 @@ $stmt_prêt = $pdo->prepare($sql_prêt);
 $stmt_prêt->execute([':search' => "%$search%", ':search_date' => $search_date ? "%$search_date%" : "%$search%"]);
 $pcs_prêt = $stmt_prêt->fetchAll();
 
-// Compter le total des PC
+// Compter le total des PC/////////////////
 $total_pcs_disponibles = count($pcs_disponibles);
 $total_pcs_sav = count($pcs_sav);
 $total_pcs_prêt = count($pcs_prêt);
 // Calcul du total des PCs du parc
 $total_pcs = $total_pcs_disponibles + $total_pcs_prêt + $total_pcs_sav;
 
-// Gestion des sélections dans les listes déroulantes
+// Gestion des sélections dans les listes déroulantes//////////
 if (isset($_GET['selected_reservation'])) {
     $selected_id = $_GET['selected_reservation'];
     $selected_index = array_search($selected_id, array_column($reservations, 'id'));
@@ -122,8 +122,8 @@ if (isset($_GET['export_history'])) {
     $output = fopen("php://output", "w");
     fputcsv($output, array('Utilisateur', 'PC', 'Date Debut', 'Date Retour', 'Statut'), "\t");
     foreach ($all_reservations as $row) {
-        
-    ////////// Formater les dates au format français (jj/mm/aaaa hh:mm)
+
+////////// Formater les dates au format français (jj/mm/aaaa hh:mm)/////////
         $date_debut = (new DateTime($row['date_debut']))->format('d/m/Y H:i');
         $date_retour = (new DateTime($row['date_retour']))->format('d/m/Y H:i');
         fputcsv($output, array($row['user'], $row['pc'], $date_debut, $date_retour, $row['status']), "\t");
@@ -132,7 +132,7 @@ if (isset($_GET['export_history'])) {
     exit();
 }
 
-// Traitement pour valider un prêt, retour, ou mise en SAV
+// Traitement pour valider un prêt, retour, ou mise en SAV/////////////////
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['prêt'])) {
         $pc_id = $_POST['pc_id'];
@@ -265,6 +265,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main>
     <section class="container">
         <div class="dashboard">
+
+            <!--////////////Historique////////////-->
+
             <!-- Bouton Historique utilisant JavaScript pour ouvrir tableau_history.php -->
             <button class="button history" onclick="window.open('tableau_history.php', '_blank', 'width=800,height=600');">Historique</button>
 
@@ -273,12 +276,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <img src="img/telecharger.png" alt="Télécharger en XLS" class="telecharger">
             </a>
 
+
             <img src="img/edn.png" alt="Logo edn" class="edn">
 
             <h1>Tableau de bord Administratif</h1><br>
             <h2>Réservations en attente</h2>
 
             <!-- ////////////////Tableau des réservations///////////////////-->
+
             <?php if (count($reservations) > 0): ?>
             <table class="reservation-table">
                 <thead>
@@ -335,7 +340,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>Aucune réservation en attente<?php echo $search ? " correspondant à '$search'" : ''; ?>.</p>
             <?php endif; ?>
 
-            <!-- ////////////Section stock des PC //////////////-->
+            <!-- ////////////////Section stock des PC ////////////////-->
+
             <div class="pc-stock">
                 <!-- Colonne gauche : Références des PC disponibles -->
                 <div class="stock-column">
@@ -468,7 +474,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- //////////////////Section des PC en maintenance////////////// -->
+            <!-- //////////////////Section des PC en maintenance//////////////// -->
             <div class="pc-sav">
                 <h2>Références des PC en maintenance (SAV)</h2>
                 <?php if (count($pcs_sav) > 0): ?>
@@ -506,9 +512,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
             </div>
 
-            <!-- /////////////////////Formulaire d'importation CSV //////////////-->
+            <!-- /////////////////////Formulaire d'importation CSV //////////////////-->
             <div class="import-csv">
-                <h2>Importer des PCs via CSV</h2>
+                <h2>Importer des PCs</h2>
                 <form action="admin.php" method="POST" enctype="multipart/form-data">
                     <input type="file" name="csv_file" accept=".csv" required>
                     <button type="submit" name="import_csv" class="button import">Importer</button>
