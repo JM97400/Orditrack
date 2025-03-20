@@ -60,12 +60,14 @@ $stmt_prêt = $pdo->prepare($sql_prêt);
 $stmt_prêt->execute([':search' => "%$search%", ':search_date' => $search_date ? "%$search_date%" : "%$search%"]);
 $pcs_prêt = $stmt_prêt->fetchAll();
 
-// Compter le total des PC///////////
+// Compter le total des PC
 $total_pcs_disponibles = count($pcs_disponibles);
 $total_pcs_sav = count($pcs_sav);
 $total_pcs_prêt = count($pcs_prêt);
+// Calcul du total des PCs du parc
+$total_pcs = $total_pcs_disponibles + $total_pcs_prêt + $total_pcs_sav;
 
-// Gestion des sélections dans les listes déroulantes/////////
+// Gestion des sélections dans les listes déroulantes
 if (isset($_GET['selected_reservation'])) {
     $selected_id = $_GET['selected_reservation'];
     $selected_index = array_search($selected_id, array_column($reservations, 'id'));
@@ -120,7 +122,8 @@ if (isset($_GET['export_history'])) {
     $output = fopen("php://output", "w");
     fputcsv($output, array('Utilisateur', 'PC', 'Date Debut', 'Date Retour', 'Statut'), "\t");
     foreach ($all_reservations as $row) {
-        // Formater les dates au format français (jj/mm/aaaa hh:mm)
+        
+    ////////// Formater les dates au format français (jj/mm/aaaa hh:mm)
         $date_debut = (new DateTime($row['date_debut']))->format('d/m/Y H:i');
         $date_retour = (new DateTime($row['date_retour']))->format('d/m/Y H:i');
         fputcsv($output, array($row['user'], $row['pc'], $date_debut, $date_retour, $row['status']), "\t");
@@ -250,8 +253,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="logout.php" class="button logout">Déconnexion</a>
     </div>
 
-     <!--///////////Statistiques stock///////////-->
+     <!--///////////Statistiques stock avec total ajouté///////////-->
     <div class="stats-container">
+        <p>💻 Nombre total de Pcs : <?php echo $total_pcs; ?> PC(s)</p>
         <p>📦 Pcs Disponibles : <?php echo $total_pcs_disponibles; ?> PC(s)</p>
         <p>🔄 Pcs en prêt : <?php echo $total_pcs_prêt; ?> PC(s)</p>
         <p>🛠️ Pcs en maintenance : <?php echo $total_pcs_sav; ?> PC(s)</p>
