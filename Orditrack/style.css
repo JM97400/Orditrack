@@ -49,14 +49,8 @@ header {
     margin: 0;
 }
 
-.button-container {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: flex-end;
-    width: 100%;
-    background: none;
-}
+
+
 
 /* Styles des boutons */
 .button {
@@ -103,21 +97,34 @@ header {
 }
 
 
-.button-container a {
-    color: rgb(244, 239, 239);
-    text-decoration: none; /* Supprime le soulignement */
-    font-size: 16px; /* Taille cohérente avec le design */
+
+
+/*////////////button container admin index//////////*/
+.button-container-admin {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    background: none;
 }
 
-/*////////////bouton admin index/////////*/
+.button-container-admin a {
+    color: rgb(244, 239, 239);
+    text-decoration: none; 
+    font-size: 16px; 
+}
 
-.button-container {
+.button-container-admin {
     display: flex;
     gap: 3px;
     background: none;
     margin-right: 20px;
 }
 
+li span.reference + .button-container {
+    margin-left: 0px;
+}
 
 
 .content .button:hover {
@@ -326,6 +333,35 @@ h2 {
     transition: background 0.3s ease;
 }
 
+/*//////Button container tableau (Approuver et Refuserr)/////////////*/
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background: none;
+}
+
+.button-container {
+    display: flex;
+    gap: 3px;
+    background: none;
+    margin-right: 20px;
+}
+
+.button-container a {
+    color: rgb(244, 239, 239);
+    text-decoration: none; 
+    font-size: 16px; 
+}
+
+li span.reference + .button-container {
+    margin-left: 0px;
+}
+
+
 /* Boutons spécifiques (plus petits) */
 .approve {
     background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
@@ -355,7 +391,7 @@ h2 {
 
 .logout {
     background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-    padding: 4px; /* Uniformisé à 12px vertical */
+    padding: 2px; /* Uniformisé à 12px vertical */
     font-size: 14px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     margin-left: 30px;
@@ -498,9 +534,6 @@ li span.reference {
     box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
 }
 
-li span.reference + .button-container {
-    margin-left: 0px;
-}
 
 /*////////Encart du stock, du pc disponible //////////*/
 
@@ -561,6 +594,8 @@ li span.reference + .button-container {
     animation: pulse 10s infinite ease-in-out;
 }
 
+/*//Formulaire d'importation en bas////*/
+
 .import-csv {
     float: right;
     width: 45%;
@@ -599,6 +634,7 @@ li span.reference + .button-container {
     text-decoration: underline;
 }
 
+
 /* clearfix pour éviter problèmes de mise en page */
 .dashboard::after {
     content: "";
@@ -636,23 +672,25 @@ li span.reference + .button-container {
 }
 
 .search-form input[type="text"] {
-    padding: 8px;
+    padding: 9px 80px;
     border: 1px solid #ccc; /* Bordure grise */
     border-radius: 4px;
     font-size: 14px;
     background: transparent; /* Pas de fond */
     color: #fff; /* Texte blanc pour contraste sur fond sombre */
+
 }
 
 .search-form input[type="text"]::placeholder {
     color: #aaa; /* Placeholder en gris clair */
+
 }
 
 .button.search {
     background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 10px 8px;
     cursor: pointer;
     border-radius: 6px;
     font-size: 14px;
@@ -663,6 +701,8 @@ li span.reference + .button-container {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
 }
 
+/*////////*/
+
 /* ////////Liste déroulante/////////*/
 
 select {
@@ -670,4 +710,6 @@ select {
     padding: 5px;
     margin-top: 10px;
 }
+
+
 

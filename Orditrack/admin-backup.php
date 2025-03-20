@@ -60,12 +60,12 @@ $stmt_prêt = $pdo->prepare($sql_prêt);
 $stmt_prêt->execute([':search' => "%$search%", ':search_date' => $search_date ? "%$search_date%" : "%$search%"]);
 $pcs_prêt = $stmt_prêt->fetchAll();
 
-// Compter le total des PC///////////
+// Compter le total des PC
 $total_pcs_disponibles = count($pcs_disponibles);
 $total_pcs_sav = count($pcs_sav);
 $total_pcs_prêt = count($pcs_prêt);
 
-// Gestion des sélections dans les listes déroulantes/////////
+// Gestion des sélections dans les listes déroulantes
 if (isset($_GET['selected_reservation'])) {
     $selected_id = $_GET['selected_reservation'];
     $selected_index = array_search($selected_id, array_column($reservations, 'id'));
@@ -102,7 +102,7 @@ if (isset($_GET['selected_sav'])) {
     }
 }
 
-// Traitement de l'exportation vers XLS bouton history
+// Traitement de l'exportation vers XLS
 if (isset($_GET['export_history'])) {
     $sql_all_reservations = "SELECT r.id, u.username AS user, p.numero_serie AS pc, r.date_debut, r.date_retour, r.status
                              FROM reservations r
@@ -239,18 +239,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 
 <header>
-    <!--///////////Barre de recherche///////////-->
     <div class="header-content">
         <form action="admin.php" method="GET" class="search-form">
-            <input type="text" name="search" placeholder="PC, Réservation, utilisateur, date..." value="<?php echo htmlspecialchars($search); ?>">
+            <input type="text" name="search" placeholder="PC, réservation, utilisateur, date..." value="<?php echo htmlspecialchars($search); ?>">
             <button type="submit" class="button search">Rechercher</button>
         </form>
-
-    <!--///////////Bouton déconnexion///////////--> 
         <a href="logout.php" class="button logout">Déconnexion</a>
     </div>
 
-     <!--///////////Statistiques stock///////////-->
     <div class="stats-container">
         <p>📦 Pcs Disponibles : <?php echo $total_pcs_disponibles; ?> PC(s)</p>
         <p>🔄 Pcs en prêt : <?php echo $total_pcs_prêt; ?> PC(s)</p>
@@ -264,7 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Bouton Historique utilisant JavaScript pour ouvrir tableau_history.php -->
             <button class="button history" onclick="window.open('tableau_history.php', '_blank', 'width=800,height=600');">Historique</button>
 
-            <!-- //////////Icône telecharger.png pour l'export XLS //////////-->
+            <!-- Icône telecharger.png pour l'export XLS -->
             <a href="admin.php?export_history=1" class="download-link">
                 <img src="img/telecharger.png" alt="Télécharger en XLS" class="telecharger">
             </a>
@@ -274,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <h1>Tableau de bord Administratif</h1><br>
             <h2>Réservations en attente</h2>
 
-            <!-- ////////////////Tableau des réservations///////////////////-->
+            <!-- ///////////Tableau des réservations///////////////////-->
             <?php if (count($reservations) > 0): ?>
             <table class="reservation-table">
                 <thead>
@@ -331,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>Aucune réservation en attente<?php echo $search ? " correspondant à '$search'" : ''; ?>.</p>
             <?php endif; ?>
 
-            <!-- ////////////Section stock des PC //////////////-->
+            <!-- Section stock des PC -->
             <div class="pc-stock">
                 <!-- Colonne gauche : Références des PC disponibles -->
                 <div class="stock-column">
@@ -464,7 +460,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- //////////////////Section des PC en maintenance////////////// -->
+            <!-- Section des PC en maintenance -->
             <div class="pc-sav">
                 <h2>Références des PC en maintenance (SAV)</h2>
                 <?php if (count($pcs_sav) > 0): ?>
@@ -502,7 +498,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
             </div>
 
-            <!-- /////////////////////Formulaire d'importation CSV //////////////-->
+            <!-- Formulaire d'importation CSV -->
             <div class="import-csv">
                 <h2>Importer des PCs via CSV</h2>
                 <form action="admin.php" method="POST" enctype="multipart/form-data">

@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
 
 <header>
     <!-- Liens pour accéder aux pages de connexion -->
-    <div class="button-container">
+    <div class="button-container-admin">
         <a href="login.php?role=admin">Admin</a>
     </div>
 </header>
