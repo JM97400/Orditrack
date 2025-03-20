@@ -27,12 +27,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
     <link rel="icon" type="image/png" href="favicon.ico">
     <link rel="stylesheet" href="style.css">
 </head>
-<script>
+<!--<script> /////////// Ancienne version d'alerte réservation /////////////
     // Vérifier si l'URL contient "?reservation=success"
     if (window.location.search.includes("reservation=success")) {
         alert("Votre réservation est en cours de validation.");
     }
-</script>
+</script>-->
 
 <body>
 
@@ -48,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
         <h1>Bienvenue sur le système de prêt de PC</h1>
         <p>Réservez un ordinateur portable en quelques clics.</p>
         <a href="login.php?role=user" class="button">Réserver un PC</a>
+
         <!-- Logo Orditrack centré -->
         <div class="logo-orditrack">
             <img src="img/orditrack.png" alt="Logo Système de Prêt" class="logo-below-title">

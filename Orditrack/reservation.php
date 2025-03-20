@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Gestion AJAX pour récupérer les PCs disponibles
+// Gestion AJAX pour récupérer les PCs disponibles (mise à jour sans avoir à rafraichir)
 if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_GET['date_retour'])) {
     $date_debut = $_GET['date_debut'];
     $date_retour = $_GET['date_retour'];

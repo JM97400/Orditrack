@@ -102,11 +102,23 @@ header {
     padding: 24px 38px; 
 }
 
+
 .button-container a {
-    color: lightgray;
+    color: rgb(244, 239, 239);
     text-decoration: none; /* Supprime le soulignement */
     font-size: 16px; /* Taille cohérente avec le design */
 }
+
+/*////////////bouton admin index/////////*/
+
+.button-container {
+    display: flex;
+    gap: 3px;
+    background: none;
+    margin-right: 20px;
+}
+
+
 
 .content .button:hover {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
@@ -410,11 +422,6 @@ li span.reference {
     text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
 
-.button-container {
-    display: flex;
-    gap: 3px;
-    background: none;
-}
 
 .button.approve {
     background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
@@ -655,6 +662,8 @@ li span.reference + .button-container {
 .button.search:hover {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
 }
+
+/* ////////Liste déroulante/////////*/
 
 select {
     width: 100%;
