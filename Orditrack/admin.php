@@ -1,4 +1,9 @@
 <?php
+
+/*/////////////////////////////////////////////////////////*/
+/*///////////////Interface Administrateur/////////////////*/
+/*///////////////////////////////////////////////////////*/
+
 // Vérification si l'utilisateur est admin et connecté
 session_start();
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
