@@ -27,7 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
     <link rel="icon" type="image/png" href="favicon.ico">
     <link rel="stylesheet" href="style.css">
 </head>
-<!--<script> /////////// Ancienne version d'alerte réservation /////////////
+
+<!--<script> /////////// Ancienne version d'alerte réservation (en pop up) /////////////
     // Vérifier si l'URL contient "?reservation=success"
     if (window.location.search.includes("reservation=success")) {
         alert("Votre réservation est en cours de validation.");
@@ -37,6 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
 <body>
 
 <header>
+    <div class="logo-edn">
+            <img src="img/edn.png" alt="Logo edn" class="logo edn">
+    </div>
+
     <!-- Liens pour accéder aux pages de connexion -->
     <div class="button-container-admin">
         <a href="login.php?role=admin">Admin</a>
@@ -44,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
 </header>
 
 <div class="container">
-    <div class="content">
+    <div class="content-front">
         <h1>Bienvenue sur le système de prêt de PC</h1>
         <p>Réservez un ordinateur portable en quelques clics.</p>
         <a href="login.php?role=user" class="button">Réserver un PC</a>
@@ -53,12 +58,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
         <div class="logo-orditrack">
             <img src="img/orditrack.png" alt="Logo Système de Prêt" class="logo-below-title">
         </div>
+
         <!-- Logo EDN à droite -->
-        <div class="logo-edn">
-            <img src="img/edn.png" alt="Logo edn" class="logo edn">
-        </div>
+        <!--<div class="logo-edn">
+            <img src="img/edn.png" alt="Logo edn" class="logo edn">// Suppression du logo EDN du centre
+        </div>-->
     </div>
 </div>
+
+<!-- //////////Ajout d’un footer avec lien vers les mentions légales (RGPD inclus)////////// -->
+<footer class="footer">
+    <a href="rgpd.php" class="footer-link">Mentions légales</a>
+</footer>
 
 </body>
 </html>

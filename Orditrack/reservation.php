@@ -36,8 +36,37 @@ $query = $db->query("SELECT COUNT(*) AS available_pcs FROM pcs WHERE status = 'd
 $data = $query->fetch(PDO::FETCH_ASSOC);
 $available_pcs = $data['available_pcs'];
 
-// Gérer la soumission du formulaire
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+// Récupérer les réservations en attente pour l'utilisateur connecté//////////////
+$query = $db->prepare("
+    SELECT r.id, p.numero_serie AS pc, r.date_debut, r.date_retour, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation, r.status
+    FROM reservations r
+    JOIN pcs p ON r.id_pc = p.id
+    WHERE r.id_user = :id_user AND r.status = 'en attente'
+");
+$query->execute(['id_user' => $id_user]);
+$current_reservations = $query->fetchAll(PDO::FETCH_ASSOC);
+
+// Gérer la sélection dans le menu déroulant pour remplacer la réservation affichée///////////////
+if (isset($_GET['selected_reservation']) && !empty($_GET['selected_reservation'])) {
+    $selected_id = $_GET['selected_reservation'];
+    $selected_index = array_search($selected_id, array_column($current_reservations, 'id'));
+    if ($selected_index !== false) {
+        $selected_reservation = array_splice($current_reservations, $selected_index, 1)[0];
+        array_unshift($current_reservations, $selected_reservation); // Place la réservation sélectionnée en premier
+    }
+}
+
+// Gérer l'annulation d'une réservation///////////////
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_reservation'])) {
+    $reservation_id = $_POST['reservation_id'];
+    $query = $db->prepare("DELETE FROM reservations WHERE id = :id AND id_user = :id_user AND status = 'en attente'");
+    $query->execute(['id' => $reservation_id, 'id_user' => $id_user]);
+    header("Location: reservation.php");
+    exit;
+}
+
+// Gérer la soumission du formulaire de réservation////////////////
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['cancel_reservation'])) {
     $pc_id = $_POST['pc_id'];
     $date_debut = $_POST['date_debut'];
     $date_retour = $_POST['date_retour'];
@@ -100,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Gestion AJAX pour récupérer les PCs disponibles (mise à jour sans avoir à rafraichir)
+// Gestion AJAX pour récupérer les PCs disponibles
 if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_GET['date_retour'])) {
     $date_debut = $_GET['date_debut'];
     $date_retour = $_GET['date_retour'];
@@ -145,8 +174,66 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
         <button class="button logout-button" onclick="window.location.href='logout.php'">Déconnexion</button>
     </div>
 
+    <!--////// Tableau des réservations en attente (en haut à droite) //////////-->
+    <?php if (count($current_reservations) > 0): ?>
+        <div class="current-reservations">
+            <h3>Réservations déjà effectuées</h3>
+            <table class="current-reservations-table">
+                <thead>
+                    <tr>
+                        <th>Réservation</th>
+                        <th>PC</th>
+                        <th>Début</th>
+                        <th>Retour</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $visible_reservations = array_slice($current_reservations, 0, 1); // 1 seule réservation visible
+                    $extra_reservations = array_slice($current_reservations, 1); // Réservations supplémentaires
+                    foreach ($visible_reservations as $reservation): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($reservation['numero_reservation']); ?></td>
+                            <td><?php echo htmlspecialchars($reservation['pc']); ?></td>
+                            <td><?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y')); ?></td> <!--format avec heure :('d/m/Y H:i')-->
+                            <td><?php echo htmlspecialchars((new DateTime($reservation['date_retour']))->format('d/m/Y')); ?></td> <!--format avec heure :('d/m/Y H:i')-->
+                            <td>
+                                <form method="POST" action="">
+                                    <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
+                                    <button type="submit" name="cancel_reservation" class="button cancel-button">Annuler</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if (count($extra_reservations) > 0): ?>
+                        <tr>
+                            <td colspan="5">
+                                <form method="GET" action="reservation.php">
+                                    <select name="selected_reservation" onchange="this.form.submit();">
+                                        <option value="">Autres en attente...</option>
+                                        <?php foreach ($extra_reservations as $reservation): ?>
+                                            <option value="<?php echo $reservation['id']; ?>">
+                                                <?php echo htmlspecialchars($reservation['numero_reservation'] . " - " . $reservation['pc'] . " (" . (new DateTime($reservation['date_debut']))->format('d/m/Y H:i') . " - " . (new DateTime($reservation['date_retour']))->format('d/m/Y H:i') . ")"); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+
+
+    <!--////// Indication du nombre de pc disponibles //////////-->
     <h2>Réservation de PC</h2>
     <p class="echo">Il y a actuellement <strong><?php echo htmlspecialchars($available_pcs); ?></strong> PC disponibles.</p>
+    
+
+    <!--////// Formulaire de réservation //////////-->
 
     <form method="POST" action="">
         <label for="date_debut">Sélectionner la date et l'heure de début de prêt :</label>

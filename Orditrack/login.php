@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         <form method="POST" class="login-form">
             <div class="input-group">
-                <label for="username">Nom d'utilisateur</label>
+                <label for="username">Nom de l'utilisateur</label>
                 <input type="text" id="username" name="username" placeholder="Entrez votre nom d'utilisateur" required>
             </div>
 

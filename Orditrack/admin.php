@@ -1,5 +1,4 @@
 <?php
-
 /*/////////////////////////////////////////////////////////*/
 /*///////////////Interface Administrateur/////////////////*/
 /*///////////////////////////////////////////////////////*/
@@ -11,10 +10,10 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-// Connexion à la base de données pour récupérer les réservations/////
+// Connexion à la base de données pour récupérer les réservations
 require 'config.php';
 
-// Récupérer la valeur de la recherche si elle existe///////
+// Récupérer la valeur de la recherche si elle existe
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Convertir la recherche en format date SQL si elle ressemble à jj/mm/aaaa
@@ -23,8 +22,8 @@ if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $search, $matches)) {
     $search_date = "{$matches[3]}-{$matches[2]}-{$matches[1]}"; // Convertit en aaaa-mm-jj
 }
 
-// Récupérer les réservations en attente avec filtre de recherche/////////
-$sql = "SELECT r.id, u.username AS user, p.numero_serie AS pc, r.date_debut, r.date_retour, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation
+// Récupérer les réservations en attente avec filtre de recherche (ajout de l'email)
+$sql = "SELECT r.id, u.username AS user, u.email AS user_email, p.numero_serie AS pc, r.date_debut, r.date_retour, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation
         FROM reservations r
         JOIN users u ON r.id_user = u.id
         JOIN pcs p ON r.id_pc = p.id
@@ -65,14 +64,36 @@ $stmt_prêt = $pdo->prepare($sql_prêt);
 $stmt_prêt->execute([':search' => "%$search%", ':search_date' => $search_date ? "%$search_date%" : "%$search%"]);
 $pcs_prêt = $stmt_prêt->fetchAll();
 
-// Compter le total des PC/////////////////
+// Compter le total des PC
 $total_pcs_disponibles = count($pcs_disponibles);
 $total_pcs_sav = count($pcs_sav);
 $total_pcs_prêt = count($pcs_prêt);
 // Calcul du total des PCs du parc
 $total_pcs = $total_pcs_disponibles + $total_pcs_prêt + $total_pcs_sav;
 
-// Gestion des sélections dans les listes déroulantes//////////
+/* ////////////Définition de la date actuelle pour le calcul du rappel//////////// */
+$current_date = new DateTime(); // Pour test du jour : $current_date = new DateTime('2025-03-22');
+
+/* ////////////Tri des réservations : celles avec icône (passées ou < 2 jours) en priorité////////// */
+$reminder_reservations = []; // Réservations avec icône
+$other_reservations = []; // Autres réservations
+foreach ($reservations as $reservation) {
+    $start_date = new DateTime($reservation['date_debut']);
+    $interval = $current_date->diff($start_date);
+    $days_until_start = $interval->days;
+    $is_past = $interval->invert; // Vrai si date_debut est passée
+    $is_near = ($days_until_start <= 2 && !$is_past); // Vrai si ≤ 2 jours et pas encore passée
+    $reservation['needs_reminder'] = ($is_past || $is_near); // Marque si icône nécessaire
+    if ($reservation['needs_reminder']) {
+        $reminder_reservations[] = $reservation;
+    } else {
+        $other_reservations[] = $reservation;
+    }
+}
+// Fusionner : réservations avec icône en premier
+$reservations = array_merge($reminder_reservations, $other_reservations);
+
+// Gestion des sélections dans les listes déroulantes
 if (isset($_GET['selected_reservation'])) {
     $selected_id = $_GET['selected_reservation'];
     $selected_index = array_search($selected_id, array_column($reservations, 'id'));
@@ -127,8 +148,6 @@ if (isset($_GET['export_history'])) {
     $output = fopen("php://output", "w");
     fputcsv($output, array('Utilisateur', 'PC', 'Date Debut', 'Date Retour', 'Statut'), "\t");
     foreach ($all_reservations as $row) {
-
-////////// Formater les dates au format français (jj/mm/aaaa hh:mm)/////////
         $date_debut = (new DateTime($row['date_debut']))->format('d/m/Y H:i');
         $date_retour = (new DateTime($row['date_retour']))->format('d/m/Y H:i');
         fputcsv($output, array($row['user'], $row['pc'], $date_debut, $date_retour, $row['status']), "\t");
@@ -137,7 +156,7 @@ if (isset($_GET['export_history'])) {
     exit();
 }
 
-// Traitement pour valider un prêt, retour, ou mise en SAV/////////////////
+// Traitement pour valider un prêt, retour, ou mise en SAV
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['prêt'])) {
         $pc_id = $_POST['pc_id'];
@@ -270,9 +289,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main>
     <section class="container">
         <div class="dashboard">
-
-            <!--////////////Historique////////////-->
-
             <!-- Bouton Historique utilisant JavaScript pour ouvrir tableau_history.php -->
             <button class="button history" onclick="window.open('tableau_history.php', '_blank', 'width=800,height=600');">Historique</button>
 
@@ -281,14 +297,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <img src="img/telecharger.png" alt="Télécharger en XLS" class="telecharger">
             </a>
 
-
             <img src="img/edn.png" alt="Logo edn" class="edn">
 
             <h1>Tableau de bord Administratif</h1><br>
             <h2>Réservations en attente</h2>
 
             <!-- ////////////////Tableau des réservations///////////////////-->
-
             <?php if (count($reservations) > 0): ?>
             <table class="reservation-table">
                 <thead>
@@ -303,19 +317,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </thead>
                 <tbody>
                     <?php 
-                    $visible_reservations = array_slice($reservations, 0, 6);
-                    $extra_reservations = array_slice($reservations, 6);
+                    $visible_reservations = array_slice($reservations, 0, 6); // 6 premières réservations (priorité aux icônes)
+                    $extra_reservations = array_slice($reservations, 6); // Reste dans la barre déroulante
                     foreach ($visible_reservations as $reservation): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($reservation['user']); ?></td>
                             <td><?php echo htmlspecialchars($reservation['pc']); ?></td>
                             <td><?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y H:i')); ?></td>
                             <td><?php echo htmlspecialchars((new DateTime($reservation['date_retour']))->format('d/m/Y H:i')); ?></td>
-                            <td><?php echo htmlspecialchars($reservation['numero_reservation']); ?></td>
+                            <td class="reservation-number">
+
+                                <!-- //////////Conteneur pour numéro et icône de rappel////////// -->
+                                <?php if ($reservation['needs_reminder']): ?>
+                                    <span class="reminder-icon">🔔</span>
+                                <?php endif; ?>
+                                <span class="reservation-ref"><?php echo htmlspecialchars($reservation['numero_reservation']); ?></span>
+                            </td>
                             <td>
                                 <div class="button-container">
                                     <a href="approve_reservation.php?id=<?php echo $reservation['id']; ?>" class="button approve">Approuver</a>
-                                    <a href="reject_reservation.php?id=<?php echo $reservation['id']; ?>" class="button reject">Refuser</a>
+                                    <a href="mailto:<?php echo htmlspecialchars($reservation['user_email']); ?>?subject=Refus de votre réservation <?php echo htmlspecialchars($reservation['numero_reservation']); ?>&body=Bonjour <?php echo htmlspecialchars($reservation['user']); ?>,%0D%0A%0D%0AVotre demande de réservation pour le PC <?php echo htmlspecialchars($reservation['pc']); ?> (Réservation n°<?php echo htmlspecialchars($reservation['numero_reservation']); ?>) du <?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y H:i')); ?> au <?php echo htmlspecialchars((new DateTime($reservation['date_retour']))->format('d/m/Y H:i')); ?> a été refusée.%0D%0A%0D%0AMotif du refus : [Veuillez préciser ici]%0D%0A%0D%0AN’hésitez pas à me contacter si vous avez des questions.%0D%0A%0D%0ACordialement,%0D%0A<?php echo htmlspecialchars($_SESSION['username']); ?> (Administrateur)" class="button reject">Refuser</a>
+                                    <a href="mailto:<?php echo htmlspecialchars($reservation['user_email']); ?>?subject=Commentaire sur votre réservation <?php echo htmlspecialchars($reservation['numero_reservation']); ?>&body=Bonjour <?php echo htmlspecialchars($reservation['user']); ?>,%0D%0A%0D%0AVotre demande de réservation pour le PC <?php echo htmlspecialchars($reservation['pc']); ?> (Réservation n°<?php echo htmlspecialchars($reservation['numero_reservation']); ?>) du <?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y H:i')); ?> au <?php echo htmlspecialchars((new DateTime($reservation['date_retour']))->format('d/m/Y H:i')); ?> a été examinée.%0D%0A%0D%0ACommentaire : [Veuillez préciser ici]%0D%0A%0D%0AN’hésitez pas à me répondre si vous avez des questions.%0D%0A%0D%0ACordialement,%0D%0A<?php echo htmlspecialchars($_SESSION['username']); ?> (Administrateur)" class="button comment">Commentaire</a>
                                 </div>
                             </td>
                         </tr>
@@ -328,7 +350,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <option value="">Autres réservations...</option>
                                         <?php foreach ($extra_reservations as $reservation): ?>
                                             <option value="<?php echo $reservation['id']; ?>">
-                                                <?php echo htmlspecialchars($reservation['user'] . " - " . $reservation['pc'] . " - " . $reservation['numero_reservation'] . " - Début: " . (new DateTime($reservation['date_debut']))->format('d/m/Y H:i') . " - Retour: " . (new DateTime($reservation['date_retour']))->format('d/m/Y H:i')); ?>
+                                                <?php 
+                                                $prefix = $reservation['needs_reminder'] ? '🔔 ' : ''; // Icône dans la barre déroulante si nécessaire
+                                                echo htmlspecialchars($prefix . $reservation['user'] . " - " . $reservation['pc'] . " - " . $reservation['numero_reservation'] . " - Début: " . (new DateTime($reservation['date_debut']))->format('d/m/Y H:i') . " - Retour: " . (new DateTime($reservation['date_retour']))->format('d/m/Y H:i')); 
+                                                ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -345,8 +370,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p>Aucune réservation en attente<?php echo $search ? " correspondant à '$search'" : ''; ?>.</p>
             <?php endif; ?>
 
-            <!-- ////////////////Section stock des PC ////////////////-->
-
+            <!-- ////////////Section stock des PC //////////////-->
             <div class="pc-stock">
                 <!-- Colonne gauche : Références des PC disponibles -->
                 <div class="stock-column">
@@ -479,7 +503,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- //////////////////Section des PC en maintenance//////////////// -->
+            <!-- //////////////////Section des PC en maintenance////////////// -->
             <div class="pc-sav">
                 <h2>Références des PC en maintenance (SAV)</h2>
                 <?php if (count($pcs_sav) > 0): ?>
@@ -517,7 +541,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
             </div>
 
-            <!-- /////////////////////Formulaire d'importation CSV //////////////////-->
+            <!-- /////////////////////Formulaire d'importation CSV //////////////-->
             <div class="import-csv">
                 <h2>Importer des PCs</h2>
                 <form action="admin.php" method="POST" enctype="multipart/form-data">
