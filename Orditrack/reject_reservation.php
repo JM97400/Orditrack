@@ -1,6 +1,9 @@
 <?php
 require 'config.php';
 
+// Démarrer la session (optionnel, si on vérifie l'utilisateur)
+session_start();
+
 if (isset($_GET['id'])) {
     $reservation_id = $_GET['id'];
 

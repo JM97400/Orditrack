@@ -4,6 +4,8 @@
 /*/////////////Page de connexion User et Admin////////////*/
 /*///////////////////////////////////////////////////////*/
 
+require 'config.php';
+
 // Démarre la session pour gérer les informations de connexion
 session_start();
 

@@ -4,6 +4,8 @@
 /*/////////////Page de validation réservation/////////////*/
 /*///////////////////////////////////////////////////////*/
 
+require 'config.php';
+
 // Vérification de la session et des permissions
 session_start();
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {

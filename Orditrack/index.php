@@ -1,6 +1,9 @@
 <?php
 require 'config.php';
 
+// Démarrer la session (optionnel, si besoin)
+session_start();
+
 // Vérification si la méthode est POST pour la réservation
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_id'], $_POST['date_debut'], $_POST['date_retour'])) {
     $user_id = $_POST['user_id'];

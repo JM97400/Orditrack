@@ -803,7 +803,7 @@ select {
     width: 100%; /* Largeur totale */
     text-align: right; /* Centrage du contenu */
     padding: 10px 0; /* Espacement vertical */
-    background: rgba(0, 0, 0, 0.5); /* Fond semi-transparent pour lisibilité */
+    /*background: rgba(0, 0, 0, 0.5); /* Fond semi-transparent pour lisibilité */
     z-index: 10; /* Au-dessus du fond animé */
     left: 0; /* Ajout : Alignement à gauche pour contrer le padding du body */
     margin-left: -40px; /* Ajout : Compense le padding de 40px du body */
