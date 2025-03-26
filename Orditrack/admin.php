@@ -3,17 +3,14 @@
 /*///////////////Interface Administrateur/////////////////*/
 /*///////////////////////////////////////////////////////*/
 
+// Connexion à la base de données pour récupérer les réservations
 require 'config.php';
 
 // Vérification si l'utilisateur est admin et connecté
-session_start();
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php?role=admin");
     exit;
 }
-
-// Connexion à la base de données pour récupérer les réservations
-require 'config.php';
 
 // Récupérer la valeur de la recherche si elle existe
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -25,6 +22,7 @@ if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $search, $matches)) {
 }
 
 // Récupérer les réservations en attente avec filtre de recherche (ajout de l'email)
+// MODIFICATION : Corrigé 'r.date_ret Fahour' en 'r.date_retour'
 $sql = "SELECT r.id, u.username AS user, u.email AS user_email, p.numero_serie AS pc, r.date_debut, r.date_retour, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation
         FROM reservations r
         JOIN users u ON r.id_user = u.id
@@ -160,6 +158,12 @@ if (isset($_GET['export_history'])) {
 
 // Traitement pour valider un prêt, retour, ou mise en SAV
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // MODIFICATION CSRF : Vérification du jeton CSRF avant tout traitement POST
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        echo "Erreur : Jeton CSRF invalide.";
+        exit;
+    }
+
     if (isset($_POST['prêt'])) {
         $pc_id = $_POST['pc_id'];
         $update_sql = "UPDATE pcs SET status = 'en prêt' WHERE id = :pc_id";
@@ -271,6 +275,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!--///////////Barre de recherche///////////-->
     <div class="header-content">
         <form action="admin.php" method="GET" class="search-form">
+            <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire de recherche -->
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
             <input type="text" name="search" placeholder="PC, Réservation, utilisateur, date..." value="<?php echo htmlspecialchars($search); ?>">
             <button type="submit" class="button search">Rechercher</button>
         </form>
@@ -338,7 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td>
                                 <div class="button-container">
                                     <a href="approve_reservation.php?id=<?php echo $reservation['id']; ?>" class="button approve">Approuver</a>
-                                    <a href="mailto:<?php echo htmlspecialchars($reservation['user_email']); ?>?subject=Refus de votre réservation <?php echo htmlspecialchars($reservation['numero_reservation']); ?>&body=Bonjour <?php echo htmlspecialchars($reservation['user']); ?>,%0D%0A%0D%0AVotre demande de réservation pour le PC <?php echo htmlspecialchars($reservation['pc']); ?> (Réservation n°<?php echo htmlspecialchars($reservation['numero_reservation']); ?>) du <?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y H:i')); ?> au <?php echo htmlspecialchars((new DateTime($reservation['date_retour']))->format('d/m/Y H:i')); ?> a été refusée.%0D%0A%0D%0AMotif du refus : [Veuillez préciser ici]%0D%0A%0D%0AN’hésitez pas à me contacter si vous avez des questions.%0D%0A%0D%0ACordialement,%0D%0A<?php echo htmlspecialchars($_SESSION['username']); ?> (Administrateur)" class="button reject">Refuser</a>
+                                    <a href="reject_reservation.php?id=<?php echo $reservation['id']; ?>" class="button reject">Refuser</a>
                                     <a href="mailto:<?php echo htmlspecialchars($reservation['user_email']); ?>?subject=Commentaire sur votre réservation <?php echo htmlspecialchars($reservation['numero_reservation']); ?>&body=Bonjour <?php echo htmlspecialchars($reservation['user']); ?>,%0D%0A%0D%0AVotre demande de réservation pour le PC <?php echo htmlspecialchars($reservation['pc']); ?> (Réservation n°<?php echo htmlspecialchars($reservation['numero_reservation']); ?>) du <?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y H:i')); ?> au <?php echo htmlspecialchars((new DateTime($reservation['date_retour']))->format('d/m/Y H:i')); ?> a été examinée.%0D%0A%0D%0ACommentaire : [Veuillez préciser ici]%0D%0A%0D%0AN’hésitez pas à me répondre si vous avez des questions.%0D%0A%0D%0ACordialement,%0D%0A<?php echo htmlspecialchars($_SESSION['username']); ?> (Administrateur)" class="button comment">Commentaire</a>
                                 </div>
                             </td>
@@ -348,6 +354,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <tr>
                             <td colspan="6">
                                 <form method="GET" action="admin.php">
+                                    <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire de sélection -->
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                     <select name="selected_reservation" onchange="this.form.submit();">
                                         <option value="">Autres réservations...</option>
                                         <?php foreach ($extra_reservations as $reservation): ?>
@@ -386,10 +394,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <li>
                                     <?php echo htmlspecialchars($pc['numero_serie']); ?>
                                     <form action="admin.php" method="POST" style="display:inline;">
+                                        <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire -->
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                         <button type="submit" name="sav" class="button sav">Mettre en SAV</button>
                                         <input type="hidden" name="pc_id" value="<?php echo $pc['id']; ?>">
                                     </form>
                                     <form action="admin.php" method="POST" style="display:inline;">
+                                        <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire -->
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                         <button type="submit" name="delete" class="button delete">Supprimer</button>
                                         <input type="hidden" name="pc_id" value="<?php echo $pc['id']; ?>">
                                     </form>
@@ -398,6 +410,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </ul>
                         <?php if (count($extra_pcs) > 0): ?>
                             <form method="GET" action="admin.php">
+                                <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire de sélection -->
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                 <select name="selected_pc" onchange="this.form.submit();">
                                     <option value="">Autres PC disponibles...</option>
                                     <?php foreach ($extra_pcs as $pc): ?>
@@ -430,10 +444,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <?php echo htmlspecialchars($reservation['numero_reservation']); ?><br>
                                     (Utilisateur : <?php echo htmlspecialchars($reservation['user']); ?>, Date de début : <?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y H:i')); ?>)
                                     <form action="admin.php" method="POST" style="display:inline;">
+                                        <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire -->
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                         <button type="submit" name="prêt" class="button approve">Prêter</button>
                                         <input type="hidden" name="pc_id" value="<?php echo $reservation['id']; ?>">
                                     </form>
                                     <form action="admin.php" method="POST" style="display:inline;">
+                                        <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire -->
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                         <button type="submit" name="delete_pending_reservation" class="button delete">Supprimer</button>
                                         <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
                                     </form>
@@ -442,6 +460,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </ul>
                         <?php if (count($extra_pending) > 0): ?>
                             <form method="GET" action="admin.php">
+                                <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire de sélection -->
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                 <select name="selected_reservation" onchange="this.form.submit();">
                                     <option value="">Autres PC en attente...</option>
                                     <?php foreach ($extra_pending as $reservation): ?>
@@ -474,10 +494,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <?php echo htmlspecialchars($pc['numero_reservation']); ?><br>
                                     (Utilisateur : <?php echo htmlspecialchars($pc['user']); ?>, Date de retour : <?php echo htmlspecialchars((new DateTime($pc['date_retour']))->format('d/m/Y H:i')); ?>)
                                     <form action="admin.php" method="POST" style="display:inline;">
+                                        <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire -->
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                         <button type="submit" name="retour" class="button retour">Retour</button>
                                         <input type="hidden" name="pc_id" value="<?php echo $pc['reservation_id']; ?>">
                                     </form>
                                     <form action="admin.php" method="POST" style="display:inline;">
+                                        <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire -->
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                         <button type="submit" name="delete_reservation" class="button delete">Supprimer</button>
                                         <input type="hidden" name="reservation_id" value="<?php echo $pc['reservation_id']; ?>">
                                     </form>
@@ -486,6 +510,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </ul>
                         <?php if (count($extra_prêt) > 0): ?>
                             <form method="GET" action="admin.php">
+                                <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire de sélection -->
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                 <select name="selected_prêt" onchange="this.form.submit();">
                                     <option value="">Autres PC en prêt...</option>
                                     <?php foreach ($extra_prêt as $pc): ?>
@@ -517,6 +543,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <li>
                                 <?php echo htmlspecialchars($pc['numero_serie']); ?>
                                 <form action="admin.php" method="POST" style="display:inline;">
+                                    <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire -->
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                     <button type="submit" name="remise_en_stock" class="button remise">Remise en stock</button>
                                     <input type="hidden" name="pc_id" value="<?php echo $pc['id']; ?>">
                                 </form>
@@ -525,6 +553,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </ul>
                     <?php if (count($extra_sav) > 0): ?>
                         <form method="GET" action="admin.php">
+                            <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire de sélection -->
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                             <select name="selected_sav" onchange="this.form.submit();">
                                 <option value="">Autres PC en maintenance...</option>
                                 <?php foreach ($extra_sav as $pc): ?>
@@ -547,6 +577,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="import-csv">
                 <h2>Importer des PCs</h2>
                 <form action="admin.php" method="POST" enctype="multipart/form-data">
+                    <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire d'importation CSV -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <input type="file" name="csv_file" accept=".csv" required>
                     <button type="submit" name="import_csv" class="button import">Importer</button>
                 </form>

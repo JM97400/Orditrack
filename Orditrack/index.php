@@ -2,21 +2,27 @@
 require 'config.php';
 
 // Démarrer la session (optionnel, si besoin)
-session_start();
+// MODIFICATION : Supprimé car géré dans config.php
+// session_start();
 
 // Vérification si la méthode est POST pour la réservation
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_id'], $_POST['date_debut'], $_POST['date_retour'])) {
-    $user_id = $_POST['user_id'];
-    $pc_id = $_POST['pc_id'];
-    $date_debut = $_POST['date_debut'];
-    $date_retour = $_POST['date_retour'];
-
-    $sql = "INSERT INTO reservations (id_user, id_pc, date_debut, date_retour, statut) VALUES (?, ?, ?, ?, 'en attente')";
-    $stmt = $pdo->prepare($sql);
-    if ($stmt->execute([$user_id, $pc_id, $date_debut, $date_retour])) {
-        echo "<p>Réservation enregistrée avec succès.</p>";
+    // MODIFICATION CSRF : Vérification du jeton CSRF avant de traiter la requête
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        echo "<p>Erreur : Jeton CSRF invalide.</p>";
     } else {
-        echo "<p>Erreur lors de la réservation.</p>";
+        $user_id = $_POST['user_id'];
+        $pc_id = $_POST['pc_id'];
+        $date_debut = $_POST['date_debut'];
+        $date_retour = $_POST['date_retour'];
+
+        $sql = "INSERT INTO reservations (id_user, id_pc, date_debut, date_retour, statut) VALUES (?, ?, ?, ?, 'en attente')";
+        $stmt = $pdo->prepare($sql);
+        if ($stmt->execute([$user_id, $pc_id, $date_debut, $date_retour])) {
+            echo "<p>Réservation enregistrée avec succès.</p>";
+        } else {
+            echo "<p>Erreur lors de la réservation.</p>";
+        }
     }
 }
 ?>

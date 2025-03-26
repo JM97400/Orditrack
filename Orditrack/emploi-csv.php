@@ -1,9 +1,18 @@
 <!--///////////////////////////////////////////////////////*/
-/*//////////////////Page Tuto import PCS//////////////////*/
-/*///////////////////////////////////////////////////////*/-->
+ /*//////////////////Page Tuto import PCS//////////////////*/
+ /*///////////////////////////////////////////////////////*/-->
+
+ <?php
+require 'config.php';
+
+// MODIFICATION : Vérification si l'utilisateur est connecté (admin)
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit;
+}
+?>
 
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
     <meta charset="UTF-8">

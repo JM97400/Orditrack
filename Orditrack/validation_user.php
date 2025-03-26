@@ -4,8 +4,6 @@
 /*///////////////////////////////////////////////////////*/
 require 'config.php';
 
-session_start();
-
 // Vérifier si l'utilisateur est connecté avec le rôle 'user'
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'user') {
     header("Location: login.php");
@@ -20,17 +18,8 @@ if (!isset($_GET['reservation_id'])) {
 
 $reservation_id = $_GET['reservation_id'];
 
-// Connexion à la base de données
-try {
-    $db = new PDO('mysql:host=localhost;dbname=gestion_pret_pc', 'test_user', 'test_password', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-    ]);
-} catch (PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
-}
-
 // Récupérer les détails de la réservation
-$query = $db->prepare("
+$query = $pdo->prepare("
     SELECT r.id, r.date_debut, r.date_retour, p.numero_serie 
     FROM reservations r 
     JOIN pcs p ON r.id_pc = p.id 

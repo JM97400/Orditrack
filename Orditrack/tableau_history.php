@@ -3,17 +3,15 @@
 /*///////////////Tableau Historique Admin/////////////////*/
 /*///////////////////////////////////////////////////////*/
 
+// Connexion à la base de données pour récupérer les réservations
 require 'config.php';
 
 // Vérification si l'utilisateur est admin et connecté
-session_start();
+// MODIFICATION : session_start() supprimé car géré dans config.php
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php?role=admin");
     exit;
 }
-
-// Connexion à la base de données pour récupérer les réservations
-require 'config.php';
 
 // Récupérer toutes les réservations
 $sql_all_reservations = "SELECT r.id, u.username AS user, p.numero_serie AS pc, r.date_debut, r.date_retour, r.status

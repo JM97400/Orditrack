@@ -2,9 +2,9 @@
 /*/////////////////////////////////////////////////////////*/
 /*/////////////Page de réservation utilisateur////////////*/
 /*///////////////////////////////////////////////////////*/
-require 'config.php';
 
-session_start();
+// MODIFICATION : session_start() supprimé car géré dans config.php
+require 'config.php';
 
 // Vérifier si l'utilisateur est connecté en utilisant le rôle 'user' dans la session
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'user') {
@@ -13,16 +13,17 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'user') {
 }
 
 // Connexion à la base de données
-try {
-    $db = new PDO('mysql:host=localhost;dbname=gestion_pret_pc', 'test_user', 'test_password', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-    ]);
-} catch (PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
-}
+// MODIFICATION : Utilisation de $pdo de config.php au lieu de créer une nouvelle instance PDO
+// try {
+//     $db = new PDO('mysql:host=localhost;dbname=gestion_pret_pc', 'test_user', 'test_password', [
+//         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+//     ]);
+// } catch (PDOException $e) {
+//     die("Erreur de connexion : " . $e->getMessage());
+// }
 
 // Récupérer l'ID de l'utilisateur basé sur son nom d'utilisateur
-$query = $db->prepare("SELECT id FROM users WHERE username = :username");
+$query = $pdo->prepare("SELECT id FROM users WHERE username = :username");
 $query->execute(['username' => $_SESSION['username']]);
 $user_data = $query->fetch(PDO::FETCH_ASSOC);
 
@@ -33,12 +34,12 @@ if (!$user_data) {
 $id_user = $user_data['id'];
 
 // Récupérer le nombre de PC disponibles (initialement, sans filtre de date)
-$query = $db->query("SELECT COUNT(*) AS available_pcs FROM pcs WHERE status = 'disponible'");
+$query = $pdo->query("SELECT COUNT(*) AS available_pcs FROM pcs WHERE status = 'disponible'");
 $data = $query->fetch(PDO::FETCH_ASSOC);
 $available_pcs = $data['available_pcs'];
 
 // Récupérer les réservations en attente pour l'utilisateur connecté//////////////
-$query = $db->prepare("
+$query = $pdo->prepare("
     SELECT r.id, p.numero_serie AS pc, r.date_debut, r.date_retour, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation, r.status
     FROM reservations r
     JOIN pcs p ON r.id_pc = p.id
@@ -59,8 +60,12 @@ if (isset($_GET['selected_reservation']) && !empty($_GET['selected_reservation']
 
 // Gérer l'annulation d'une réservation///////////////
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_reservation'])) {
+    // MODIFICATION : Ajout de la vérification CSRF pour l'annulation
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("Erreur : Jeton CSRF invalide.");
+    }
     $reservation_id = $_POST['reservation_id'];
-    $query = $db->prepare("DELETE FROM reservations WHERE id = :id AND id_user = :id_user AND status = 'en attente'");
+    $query = $pdo->prepare("DELETE FROM reservations WHERE id = :id AND id_user = :id_user AND status = 'en attente'");
     $query->execute(['id' => $reservation_id, 'id_user' => $id_user]);
     header("Location: reservation.php");
     exit;
@@ -68,6 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_reservation'])
 
 // Gérer la soumission du formulaire de réservation////////////////
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['cancel_reservation'])) {
+    // MODIFICATION : Ajout de la vérification CSRF pour la soumission de la réservation
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die("Erreur : Jeton CSRF invalide.");
+    }
     $pc_id = $_POST['pc_id'];
     $date_debut = $_POST['date_debut'];
     $date_retour = $_POST['date_retour'];
@@ -82,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['cancel_reservation']
     }
 
     // Vérifier si le PC est toujours disponible pour la période donnée
-    $query = $db->prepare("
+    $query = $pdo->prepare("
         SELECT status 
         FROM pcs 
         WHERE id = :id_pc 
@@ -112,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['cancel_reservation']
 
     // Ajouter la réservation
     try {
-        $query = $db->prepare("
+        $query = $pdo->prepare("
             INSERT INTO reservations (id_user, id_pc, date_debut, date_retour, status, validated_by) 
             VALUES (:id_user, :id_pc, :date_debut, :date_retour, 'en attente', NULL)
         ");
@@ -123,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['cancel_reservation']
             'date_retour' => $date_retour
         ]);
     
-        header("Location: validation_user.php?reservation_id=" . $db->lastInsertId());
+        header("Location: validation_user.php?reservation_id=" . $pdo->lastInsertId());
         exit;
     } catch (PDOException $e) {
         die("Erreur lors de l'ajout de la réservation : " . $e->getMessage());
@@ -135,7 +144,7 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
     $date_debut = $_GET['date_debut'];
     $date_retour = $_GET['date_retour'];
 
-    $query = $db->prepare("
+    $query = $pdo->prepare("
         SELECT id, numero_serie 
         FROM pcs 
         WHERE status = 'disponible'
@@ -201,6 +210,8 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
                             <td><?php echo htmlspecialchars((new DateTime($reservation['date_retour']))->format('d/m/Y')); ?></td> <!--format avec heure :('d/m/Y H:i')-->
                             <td>
                                 <form method="POST" action="">
+                                    <!-- MODIFICATION : Ajout du jeton CSRF dans le formulaire d'annulation -->
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                                     <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
                                     <button type="submit" name="cancel_reservation" class="button cancel-button">Annuler</button>
                                 </form>
@@ -228,15 +239,14 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
         </div>
     <?php endif; ?>
 
-
     <!--////// Indication du nombre de pc disponibles //////////-->
     <h2>Réservation de PC</h2>
     <p class="echo">Il y a actuellement <strong><?php echo htmlspecialchars($available_pcs); ?></strong> PC disponibles.</p>
     
-
     <!--////// Formulaire de réservation //////////-->
-
     <form method="POST" action="">
+        <!-- MODIFICATION : Ajout du jeton CSRF dans le formulaire de réservation -->
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
         <label for="date_debut">Sélectionner la date et l'heure de début de prêt :</label>
         <input type="datetime-local" name="date_debut" id="date_debut" required><br>
 

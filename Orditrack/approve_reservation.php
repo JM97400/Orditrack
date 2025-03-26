@@ -7,7 +7,7 @@
 require 'config.php';
 
 // Vérification de la session et des permissions
-session_start();
+// MODIFICATION : session_start() supprimé car géré dans config.php
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php?role=admin");
     exit;
@@ -17,8 +17,7 @@ if (isset($_GET['id'])) {
     $reservation_id = $_GET['id'];
 
     // Connexion à la base de données
-    require 'config.php';
-
+   
     // Récupérer les informations de la réservation
     $sql = "SELECT r.id_user, u.username, u.email, r.date_debut, r.date_retour, r.id_pc
             FROM reservations r
