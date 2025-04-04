@@ -1,9 +1,6 @@
 <?php
+/* Inclure le fichier de configuration pour la connexion à la base de données */
 require 'config.php';
-
-// Démarrer la session (optionnel, si besoin)
-// MODIFICATION : Supprimé car géré dans config.php
-// session_start();
 
 // Vérification si la méthode est POST pour la réservation
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_id'], $_POST['date_debut'], $_POST['date_retour'])) {
@@ -16,6 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
         $date_debut = $_POST['date_debut'];
         $date_retour = $_POST['date_retour'];
 
+        /* Insérer la réservation dans la base de données avec le statut 'en attente' */
         $sql = "INSERT INTO reservations (id_user, id_pc, date_debut, date_retour, statut) VALUES (?, ?, ?, ?, 'en attente')";
         $stmt = $pdo->prepare($sql);
         if ($stmt->execute([$user_id, $pc_id, $date_debut, $date_retour])) {

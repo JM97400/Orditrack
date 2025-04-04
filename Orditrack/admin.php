@@ -3,26 +3,25 @@
 /*///////////////Interface Administrateur/////////////////*/
 /*///////////////////////////////////////////////////////*/
 
-// Connexion à la base de données pour récupérer les réservations
+/* Se connecter à la base de données */
 require 'config.php';
 
-// Vérification si l'utilisateur est admin et connecté
+/* Vérifier si l'utilisateur est un admin connecté, sinon rediriger vers la page de connexion */
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     header("Location: login.php?role=admin");
     exit;
 }
 
-// Récupérer la valeur de la recherche si elle existe
+/* Récupérer la recherche entrée par l'utilisateur, s'il y en a une */
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-// Convertir la recherche en format date SQL si elle ressemble à jj/mm/aaaa
+/* Transformer une recherche au format jj/mm/aaaa en aaaa-mm-jj pour les requêtes SQL */
 $search_date = '';
 if (preg_match('/^(\d{2})\/(\d{2})\/(\d{4})$/', $search, $matches)) {
-    $search_date = "{$matches[3]}-{$matches[2]}-{$matches[1]}"; // Convertit en aaaa-mm-jj
+    $search_date = "{$matches[3]}-{$matches[2]}-{$matches[1]}";
 }
 
-// Récupérer les réservations en attente avec filtre de recherche (ajout de l'email)
-// MODIFICATION : Corrigé 'r.date_ret Fahour' en 'r.date_retour'
+/* Récupérer les réservations en attente avec un filtre de recherche (inclut l'email de l'utilisateur) */
 $sql = "SELECT r.id, u.username AS user, u.email AS user_email, p.numero_serie AS pc, r.date_debut, r.date_retour, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation
         FROM reservations r
         JOIN users u ON r.id_user = u.id
@@ -37,19 +36,19 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute([':search' => "%$search%", ':search_date' => $search_date ? "%$search_date%" : "%$search%"]);
 $reservations = $stmt->fetchAll();
 
-// Récupérer le stock de PC disponibles avec filtre de recherche
+/* Récupérer les PCs disponibles avec un filtre de recherche */
 $sql_stock = "SELECT id, numero_serie, status FROM pcs WHERE status = 'disponible' AND numero_serie LIKE :search";
 $stmt_stock = $pdo->prepare($sql_stock);
 $stmt_stock->execute([':search' => "%$search%"]);
 $pcs_disponibles = $stmt_stock->fetchAll();
 
-// Récupérer les PC en maintenance (SAV) avec filtre de recherche
+/* Récupérer les PCs en maintenance (SAV) avec un filtre de recherche */
 $sql_sav = "SELECT id, numero_serie FROM pcs WHERE status = 'en réparation' AND numero_serie LIKE :search";
 $stmt_sav = $pdo->prepare($sql_sav);
 $stmt_sav->execute([':search' => "%$search%"]);
 $pcs_sav = $stmt_sav->fetchAll();
 
-// Récupérer les PC en prêt (colonne de droite) avec filtre de recherche
+/* Récupérer les PCs en prêt avec un filtre de recherche */
 $sql_prêt = "SELECT r.id AS reservation_id, r.date_debut, r.date_retour, u.username AS user, p.numero_serie AS pc, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation
              FROM reservations r
              JOIN users u ON r.id_user = u.id
@@ -64,36 +63,34 @@ $stmt_prêt = $pdo->prepare($sql_prêt);
 $stmt_prêt->execute([':search' => "%$search%", ':search_date' => $search_date ? "%$search_date%" : "%$search%"]);
 $pcs_prêt = $stmt_prêt->fetchAll();
 
-// Compter le total des PC
+/* Compter le nombre total de PCs dans chaque catégorie */
 $total_pcs_disponibles = count($pcs_disponibles);
 $total_pcs_sav = count($pcs_sav);
 $total_pcs_prêt = count($pcs_prêt);
-// Calcul du total des PCs du parc
 $total_pcs = $total_pcs_disponibles + $total_pcs_prêt + $total_pcs_sav;
 
-/* ////////////Définition de la date actuelle pour le calcul du rappel//////////// */
-$current_date = new DateTime(); // Pour test du jour : $current_date = new DateTime('2025-03-22');
+/* Définir la date actuelle pour calculer les rappels */
+$current_date = new DateTime(); // Exemple pour tester : $current_date = new DateTime('2025-03-22');
 
-/* ////////////Tri des réservations : celles avec icône (passées ou < 2 jours) en priorité////////// */
-$reminder_reservations = []; // Réservations avec icône
-$other_reservations = []; // Autres réservations
+/* Trier les réservations : celles nécessitant un rappel (passées ou dans moins de 2 jours) en priorité */
+$reminder_reservations = []; // Réserver les réservations avec rappel
+$other_reservations = []; // Réserver les autres réservations
 foreach ($reservations as $reservation) {
     $start_date = new DateTime($reservation['date_debut']);
     $interval = $current_date->diff($start_date);
     $days_until_start = $interval->days;
-    $is_past = $interval->invert; // Vrai si date_debut est passée
-    $is_near = ($days_until_start <= 2 && !$is_past); // Vrai si ≤ 2 jours et pas encore passée
-    $reservation['needs_reminder'] = ($is_past || $is_near); // Marque si icône nécessaire
+    $is_past = $interval->invert; // Retourner vrai si la date est passée
+    $is_near = ($days_until_start <= 2 && !$is_past); // Retourner vrai si dans 2 jours ou moins
+    $reservation['needs_reminder'] = ($is_past || $is_near); // Ajouter un marqueur pour le rappel
     if ($reservation['needs_reminder']) {
         $reminder_reservations[] = $reservation;
     } else {
         $other_reservations[] = $reservation;
     }
 }
-// Fusionner : réservations avec icône en premier
-$reservations = array_merge($reminder_reservations, $other_reservations);
+$reservations = array_merge($reminder_reservations, $other_reservations); // Fusionner avec priorité aux rappels
 
-// Gestion des sélections dans les listes déroulantes
+/* Gérer la sélection dans les listes déroulantes pour placer un élément en haut */
 if (isset($_GET['selected_reservation'])) {
     $selected_id = $_GET['selected_reservation'];
     $selected_index = array_search($selected_id, array_column($reservations, 'id'));
@@ -130,7 +127,7 @@ if (isset($_GET['selected_sav'])) {
     }
 }
 
-// Traitement de l'exportation vers XLS bouton history
+/* Exporter toutes les réservations en fichier XLS si demandé */
 if (isset($_GET['export_history'])) {
     $sql_all_reservations = "SELECT r.id, u.username AS user, p.numero_serie AS pc, r.date_debut, r.date_retour, r.status
                              FROM reservations r
@@ -156,14 +153,15 @@ if (isset($_GET['export_history'])) {
     exit();
 }
 
-// Traitement pour valider un prêt, retour, ou mise en SAV
+/* Gérer les actions POST : prêt, retour, SAV, suppression, etc. */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // MODIFICATION CSRF : Vérification du jeton CSRF avant tout traitement POST
+    /* Vérifier le jeton CSRF pour sécuriser les requêtes POST */
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         echo "Erreur : Jeton CSRF invalide.";
         exit;
     }
 
+    /* Valider un prêt */
     if (isset($_POST['prêt'])) {
         $pc_id = $_POST['pc_id'];
         $update_sql = "UPDATE pcs SET status = 'en prêt' WHERE id = :pc_id";
@@ -173,6 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    /* Enregistrer un retour */
     if (isset($_POST['retour'])) {
         $pc_id = $_POST['pc_id'];
         $update_sql = "UPDATE pcs SET status = 'disponible' WHERE id = :pc_id";
@@ -185,6 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    /* Mettre un PC en SAV */
     if (isset($_POST['sav'])) {
         $pc_id = $_POST['pc_id'];
         $update_sql = "UPDATE pcs SET status = 'en réparation' WHERE id = :pc_id";
@@ -194,6 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    /* Remettre un PC en stock */
     if (isset($_POST['remise_en_stock'])) {
         $pc_id = $_POST['pc_id'];
         $update_sql = "UPDATE pcs SET status = 'disponible' WHERE id = :pc_id";
@@ -203,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    /* Supprimer un PC */
     if (isset($_POST['delete'])) {
         $pc_id = $_POST['pc_id'];
         $sql_delete = "DELETE FROM pcs WHERE id = :pc_id";
@@ -215,6 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    /* Supprimer une réservation validée et remettre le PC en stock */
     if (isset($_POST['delete_reservation'])) {
         $reservation_id = $_POST['reservation_id'];
         $update_pc_sql = "UPDATE pcs SET status = 'disponible' WHERE id = (SELECT id_pc FROM reservations WHERE id = :reservation_id)";
@@ -227,6 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    /* Supprimer une réservation en attente */
     if (isset($_POST['delete_pending_reservation'])) {
         $reservation_id = $_POST['reservation_id'];
         $delete_sql = "DELETE FROM reservations WHERE id = :reservation_id";
@@ -236,6 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    /* Importer des PCs depuis un fichier CSV */
     if (isset($_POST['import_csv']) && isset($_FILES['csv_file'])) {
         $file = $_FILES['csv_file']['tmp_name'];
         if (($handle = fopen($file, "r")) !== FALSE) {

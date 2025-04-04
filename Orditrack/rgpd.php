@@ -1,5 +1,5 @@
 <?php
-// Pas de traitement PHP spécifique requis pour cette page statique
+// Pas de traitement PHP spécifique pour cette page statique
 ?>
 
 <!DOCTYPE html>
@@ -12,10 +12,10 @@
 </head>
 <body>
 
-<div class="rgpd-container"> <!-- Changé de tutorial-container à rgpd-container -->
+<div class="rgpd-container">
 
     <!-- Bouton Fermer -->
-    <a href="index.php"><button class="rgpd-close-button">Fermer</button></a> <!-- Changé de home-button à rgpd-close-button -->
+    <a href="index.php"><button class="rgpd-close-button">Fermer</button></a> 
 
     <h1>Politique de Protection des Données (RGPD)</h1>
     <p class="rgpd-intro">Conformément au Règlement Général sur la Protection des Données (RGPD) de l’Union Européenne, cette page détaille la manière dont nous collectons, traitons et protégeons vos données personnelles dans le cadre de notre service de gestion de prêt de PC.</p>
@@ -25,7 +25,7 @@
         <p>Le responsable du traitement des données est :</p>
         <ul>
             <li><span class="rgpd-highlight">Ecole du Numérique</span></li>
-            <li>Adresse : [Votre Adresse Physique]</li>
+            <li>Adresse : 12 rue Gabriel de Kerveguen, 97490 Saint Denis</li>
             <li>Email : <a href="mailto:[alexis@gmail.com]">[alexis@gmail.com]</a></li>
         </ul>
         <p>Pour toute question relative à vos données, contactez-nous via l’adresse ci-dessus.</p>
@@ -69,7 +69,7 @@
             <li>Les administrateurs du site pour la gestion des réservations.</li>
             <li>Le personnel technique en charge de la maintenance du système.</li>
         </ul>
-        <p>Aucun transfert hors UE n’est effectué. Les données sont hébergées sur [précisez l’hébergeur, ex. "des serveurs locaux en France"].</p>
+        <p>Aucun transfert hors UE n’est effectué. Les données sont hébergées sur [préciser l’hébergeur, ex. "les serveurs de l'EDN"].</p>
     </div>
 
     <div class="rgpd-step">
@@ -93,7 +93,7 @@
             <li><span class="rgpd-highlight">Droit d’opposition</span> : Refuser le traitement pour des raisons légitimes.</li>
             <li><span class="rgpd-highlight">Droit à la portabilité</span> : Récupérer vos données dans un format structuré.</li>
         </ol>
-        <p>Pour exercer ces droits, contactez-nous à [votre.email@exemple.com]. Une réponse vous sera fournie sous 1 mois.</p>
+        <p>Pour exercer ces droits, contactez-nous à [alexis@gmail.com]. Une réponse vous sera fournie sous 1 mois.</p>
     </div>
 
     <div class="rgpd-step">
@@ -102,7 +102,6 @@
         <ul>
             <li>Sessions sécurisées avec cookies `httponly` et `samesite=Strict`.</li>
             <li>Protection contre les attaques CSRF via jetons.</li>
-            <li>En production : mots de passe chiffrés avec des algorithmes sécurisés (ex. bcrypt).</li>
         </ul>
     </div>
 

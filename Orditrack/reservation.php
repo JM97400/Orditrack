@@ -253,7 +253,7 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
         <label for="date_retour">Sélectionner la date et l'heure de retour de prêt :</label>
         <input type="datetime-local" name="date_retour" id="date_retour" required><br>
 
-        <label for="pc_id">Choisir un PC à réserver :</label>
+        <label for="pc_id">Choisir un PC Bureautique ou Graphique :</label>
         <select name="pc_id" id="pc_id" required>
             <option value="">Sélectionnez les dates d'abord</option>
         </select><br>

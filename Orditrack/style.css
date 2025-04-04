@@ -190,7 +190,7 @@ input, select {
     border-radius: 8px;
     width: 70%;
     max-width: 600px;
-    margin-top: -15px;
+    /*margin-top: 5px;*/
    
 }
 
@@ -589,7 +589,7 @@ li span.reference {
 
 .stats-container {
     position: absolute;
-    top: 65px;
+    top: 50px;
     right: 10px;
     background: rgba(59, 130, 246, 1);
     color: #ffffff;
