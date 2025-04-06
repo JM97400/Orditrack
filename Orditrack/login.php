@@ -7,7 +7,7 @@ require 'config.php'; // Inclut session_start() et génère $_SESSION['csrf_toke
 
 // Traitement de la connexion de l'utilisateur ou de l'administrateur
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Vérifier le jeton CSRF
+    // Vérifie si le jeton CSRF envoyé par le formulaire ($_POST['csrf_token']) existe et correspond à celui stocké dans la session
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $error = "Erreur : Jeton CSRF invalide.";
     } else {
@@ -69,8 +69,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- Affichage du message d'erreur -->
         <?php if (isset($error)) { echo "<p class='error'>$error</p>"; } ?>
         
-        <form method="POST" class="login-form">
+        <form method="POST" class="login-form"><!--Le formulaire envoie les données en POST. Un champ caché contient le jeton CSRF (protégé avec htmlspecialchars pour éviter les attaques XSS)-->
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+             
             <div class="input-group">
                 <label for="username">Nom de l'utilisateur</label>
                 <input type="text" id="username" name="username" placeholder="Entrez votre nom d'utilisateur" required>

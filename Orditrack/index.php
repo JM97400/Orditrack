@@ -2,12 +2,14 @@
 /* Inclure le fichier de configuration pour la connexion à la base de données */
 require 'config.php';
 
-// Vérification si la méthode est POST pour la réservation
+// Vérification si la méthode est POST pour la réservation - On vérifie si un formulaire de réservation est envoyé avec les champs nécessaires (ID utilisateur, ID PC, dates).
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_id'], $_POST['date_debut'], $_POST['date_retour'])) {
+    
     // MODIFICATION CSRF : Vérification du jeton CSRF avant de traiter la requête
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         echo "<p>Erreur : Jeton CSRF invalide.</p>";
-    } else {
+        
+    } else { /*Si le jeton est valide, on récupère les données du formulaire */
         $user_id = $_POST['user_id'];
         $pc_id = $_POST['pc_id'];
         $date_debut = $_POST['date_debut'];

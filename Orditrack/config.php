@@ -3,8 +3,8 @@
 
 $host = 'localhost';
 $dbname = 'gestion_pret_pc';
-$username = 'root'; // À modifier selon config
-$password = ''; // À modifier selon config
+$username = 'root'; 
+$password = ''; 
 
 // Configuration des paramètres de session (Protection des cookies)
 // Vérifier si la session n'est pas déjà active avant de définir les paramètres

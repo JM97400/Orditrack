@@ -3,7 +3,7 @@
 /*/////////////Page de réservation utilisateur////////////*/
 /*///////////////////////////////////////////////////////*/
 
-// MODIFICATION : session_start() supprimé car géré dans config.php
+/* Se connecter à la base de données */
 require 'config.php';
 
 // Vérifier si l'utilisateur est connecté en utilisant le rôle 'user' dans la session
@@ -20,25 +20,26 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'user') {
 //     ]);
 // } catch (PDOException $e) {
 //     die("Erreur de connexion : " . $e->getMessage());
-// }
+// }    
 
-// Récupérer l'ID de l'utilisateur basé sur son nom d'utilisateur
+// Récupère l’ID de l’utilisateur connecté depuis la table users en utilisant son nom d’utilisateur stocké dans la session.
 $query = $pdo->prepare("SELECT id FROM users WHERE username = :username");
 $query->execute(['username' => $_SESSION['username']]);
 $user_data = $query->fetch(PDO::FETCH_ASSOC);
 
+//Si l’utilisateur n’est pas trouvé, on arrête avec une erreur. Sinon, on stocke son ID dans $id_user
 if (!$user_data) {
     die("Erreur : utilisateur introuvable.");
 }
-
 $id_user = $user_data['id'];
+
 
 // Récupérer le nombre de PC disponibles (initialement, sans filtre de date)
 $query = $pdo->query("SELECT COUNT(*) AS available_pcs FROM pcs WHERE status = 'disponible'");
 $data = $query->fetch(PDO::FETCH_ASSOC);
 $available_pcs = $data['available_pcs'];
 
-// Récupérer les réservations en attente pour l'utilisateur connecté//////////////
+// Récupérer les réservations en attente pour l'utilisateur connecté avec une jointure sur la table pcs pour avoir le numéro de série du PC//////////////
 $query = $pdo->prepare("
     SELECT r.id, p.numero_serie AS pc, r.date_debut, r.date_retour, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation, r.status
     FROM reservations r
@@ -48,7 +49,7 @@ $query = $pdo->prepare("
 $query->execute(['id_user' => $id_user]);
 $current_reservations = $query->fetchAll(PDO::FETCH_ASSOC);
 
-// Gérer la sélection dans le menu déroulant pour remplacer la réservation affichée///////////////
+// Gérer la sélection dans le menu déroulant pour remplacer la réservation affichée (on la met en haut de la liste des réservations affichées)///////////////
 if (isset($_GET['selected_reservation']) && !empty($_GET['selected_reservation'])) {
     $selected_id = $_GET['selected_reservation'];
     $selected_index = array_search($selected_id, array_column($current_reservations, 'id'));
@@ -64,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_reservation'])
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         die("Erreur : Jeton CSRF invalide.");
     }
+    //Supprime la réservation si elle appartient à l’utilisateur et est "en attente". Redirige vers la même page
     $reservation_id = $_POST['reservation_id'];
     $query = $pdo->prepare("DELETE FROM reservations WHERE id = :id AND id_user = :id_user AND status = 'en attente'");
     $query->execute(['id' => $reservation_id, 'id_user' => $id_user]);
@@ -77,15 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['cancel_reservation']
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         die("Erreur : Jeton CSRF invalide.");
     }
+    //Récupère l’ID du PC, la date de début et de retour depuis le formulaire.
     $pc_id = $_POST['pc_id'];
     $date_debut = $_POST['date_debut'];
     $date_retour = $_POST['date_retour'];
 
-    // Validation des dates
+    // Validation des dates de réservation
     if ($date_debut < date("Y-m-d\TH:i")) {
         die("La date de début ne peut pas être dans le passé.");
     }
-
     if ($date_retour <= $date_debut) {
         die("La date de retour doit être après la date de début.");
     }
@@ -115,11 +117,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['cancel_reservation']
     ]);
     $pc = $query->fetch(PDO::FETCH_ASSOC);
 
+    //Si le PC n’est pas disponible, on arrête avec une erreur
     if (!$pc) {
         die("Ce PC n'est pas disponible pour la période sélectionnée.");
     }
 
-    // Ajouter la réservation
+    // Ajouter la réservation dans la base avec le statut "en attente" et redirige vers une page de validation.
     try {
         $query = $pdo->prepare("
             INSERT INTO reservations (id_user, id_pc, date_debut, date_retour, status, validated_by) 
@@ -139,7 +142,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['cancel_reservation']
     }
 }
 
-// Gestion AJAX pour récupérer les PCs disponibles
+////////// Gestion AJAX pour récupérer les PCs disponibles//////////////////
+
+//On vérifie si trois paramètres sont présents dans l’URL (via la méthode GET)
 if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_GET['date_retour'])) {
     $date_debut = $_GET['date_debut'];
     $date_retour = $_GET['date_retour'];
@@ -160,10 +165,11 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
             AND status IN ('en attente', 'validé', 'en prêt')
         )
     ");
+    //On récupère tous les résultats de la requête sous forme de tableau
     $query->execute(['date_debut' => $date_debut, 'date_retour' => $date_retour]);
     $pcs = $query->fetchAll(PDO::FETCH_ASSOC);
 
-    echo json_encode($pcs);
+    echo json_encode($pcs); //On convertit le tableau $pcs en format JSON. Ce JSON sera lu par le JavaScript.
     exit;
 }
 ?>
@@ -184,7 +190,7 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
         <button class="button logout-button" onclick="window.location.href='logout.php'">Déconnexion</button>
     </div>
 
-    <!--////// Tableau des réservations en attente (en haut à droite) //////////-->
+    <!--////// Tableau des réservations en attente (en haut à droite) avec une option pour annuler (sécurisée avec CSRF).//////////-->
     <?php if (count($current_reservations) > 0): ?>
         <div class="current-reservations">
             <h3>Réservations déjà effectuées</h3>
@@ -261,18 +267,22 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
         <button type="submit">Réserver</button>
     </form>
 
-    <script>
+    <script> //Script JavaScript qui met à jour la liste des PC disponibles en temps réel via AJAX quand les dates changent.
+
+        //On récupère trois éléments du formulaire HTML avec leur ID                                    
         const dateDebutInput = document.getElementById('date_debut');
         const dateRetourInput = document.getElementById('date_retour');
-        const pcSelect = document.getElementById('pc_id');
+        const pcSelect = document.getElementById('pc_id');// Liste déroulante où les pcs sont affichés
 
-        function updatePcList() {
+        function updatePcList() { //Fonction updatePcList() qui va chercher les PC disponibles et mettre à jour la liste.
             const dateDebut = dateDebutInput.value;
             const dateRetour = dateRetourInput.value;
 
-            if (dateDebut && dateRetour && dateRetour > dateDebut) {
+            if (dateDebut && dateRetour && dateRetour > dateDebut) {//Vérifie que les deux dates sont remplies et que la date de retour est après la date de début.
+
+                //Envoie une requête AJAX à reservation.php avec les paramètres get_available_pcs=1, date_debut et date_retour. encodeURIComponent sécurise les valeurs dans l’URL.
                 fetch(`reservation.php?get_available_pcs=1&date_debut=${encodeURIComponent(dateDebut)}&date_retour=${encodeURIComponent(dateRetour)}`)
-                    .then(response => response.json())
+                    .then(response => response.json())//Transforme la réponse JSON en objet JavaScript.
                     .then(data => {
                         pcSelect.innerHTML = '';
                         if (data.length > 0) {
@@ -289,7 +299,7 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
                     .catch(error => console.error('Erreur:', error));
             }
         }
-
+        //Quand l’utilisateur change la date de début ou de retour (change), la fonction updatePcList() est appelée automatiquement
         dateDebutInput.addEventListener('change', updatePcList);
         dateRetourInput.addEventListener('change', updatePcList);
     </script>
