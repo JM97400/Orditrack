@@ -13,13 +13,13 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-// Récupérer toutes les réservations
+// Récupérer toutes les réservations dans la base
 $sql_all_reservations = "SELECT r.id, u.username AS user, p.numero_serie AS pc, r.date_debut, r.date_retour, r.status
                          FROM reservations r
                          JOIN users u ON r.id_user = u.id
                          JOIN pcs p ON r.id_pc = p.id";
 $stmt_all = $pdo->query($sql_all_reservations);
-$all_reservations = $stmt_all->fetchAll();
+$all_reservations = $stmt_all->fetchAll(); // Toutes les informations sont stockées dans $all_reservations
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +40,7 @@ $all_reservations = $stmt_all->fetchAll();
                 <button class="button close" onclick="window.close()">Fermer</button>
 
                 <!-- Tableau des réservations -->
-                <?php if (count($all_reservations) > 0): ?>
+                <?php if (count($all_reservations) > 0): ?> <!--On récupère les informations dans $all_reservations pour créer le tableau -->
                     <table class="history-table" id="historyTable">
                         <thead>
                             <tr>
@@ -50,7 +50,8 @@ $all_reservations = $stmt_all->fetchAll();
                                 <th>Date Retour</th>
                                 <th>Statut</th>
                             </tr>
-                            <tr class="filter-row">
+                            <!-- Boite pour filtrer-->
+                            <tr class="filter-row"> 
                                 <th>
                                     <input type="text" class="filter-input" data-column="0" placeholder="Filtrer..." onkeyup="filterTable()">
                                 </th>

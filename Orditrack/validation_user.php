@@ -1,7 +1,7 @@
 <?php
-/*/////////////////////////////////////////////////////////*/
-/*/////////////Page de validation de la demande///////////*/
-/*///////////////////////////////////////////////////////*/
+/*////////////////////////////////////////////////////////////////////////////////*/
+/*/////////////Page de validation de la demande, attente confirmation ///////////*/
+/*//////////////////////////////////////////////////////////////////////////////*/
 require 'config.php';
 
 // Vérifier si l'utilisateur est connecté avec le rôle 'user'
@@ -16,7 +16,7 @@ if (!isset($_GET['reservation_id'])) {
     exit;
 }
 
-$reservation_id = $_GET['reservation_id'];
+$reservation_id = $_GET['reservation_id'];//On prend le numéro de réservation de l’URL et on le met dans une boîte $reservation_id.
 
 // Récupérer les détails de la réservation
 $query = $pdo->prepare("
@@ -37,7 +37,7 @@ if (!$reservation) {
     die("Erreur : réservation introuvable ou non autorisée.");
 }
 
-// Générer un numéro de réservation (par exemple, "RES-XXXX" basé sur l'ID)
+// Générer un numéro de réservation (par exemple, "RES-XXXX" basé sur l'ID) - Le n° de réservation fera toujours 4 chiffres.
 $numero_reservation = "RES-" . str_pad($reservation['id'], 4, "0", STR_PAD_LEFT);
 ?>
 
@@ -63,9 +63,11 @@ $numero_reservation = "RES-" . str_pad($reservation['id'], 4, "0", STR_PAD_LEFT)
             <div class="icon-success">
                 <span>✔</span>
             </div>
+            <!-- Message que le réservation est enregistreé, mais pas encore validée-->
             <p>Votre réservation <strong><?php echo htmlspecialchars($numero_reservation); ?></strong> a été enregistrée avec succès et est en attente de validation par un administrateur.</p>
             <p>Un email de confirmation vous sera envoyé à l’adresse <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong>.</p>
-            <div class="reservation-details">
+
+            <div class="reservation-details"> <!--Résumé sous forme de liste-->
                 <p><strong>Date de début :</strong> <?php echo htmlspecialchars(date('d/m/Y H:i', strtotime($reservation['date_debut']))); ?></p>
                 <p><strong>Date de retour :</strong> <?php echo htmlspecialchars(date('d/m/Y H:i', strtotime($reservation['date_retour']))); ?></p>
                 <p><strong>PC réservé :</strong> <?php echo htmlspecialchars($reservation['numero_serie']); ?></p>
