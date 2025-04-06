@@ -90,7 +90,8 @@ $all_reservations = $stmt_all->fetchAll(); // Toutes les informations sont stock
 
     <!-- Script JavaScript pour le filtrage -->
     <script>
-        function filterTable() {
+        { /*Création d'une fonction pour le filtrage*/
+        function filterTable() 
             const table = document.getElementById('historyTable');
             const tbody = table.querySelector('tbody');
             const rows = Array.from(tbody.querySelectorAll('tr'));
