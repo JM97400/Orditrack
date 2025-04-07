@@ -14,7 +14,9 @@ $new_password = 'nouveauMDP'; // Remplace par le mot de passe souhaité
 echo password_hash($new_password, PASSWORD_DEFAULT) . "\n";
 */
 
-//////// Création d'un nouveau mot de passe pour nouvel utilisateur ////////hash_passwords.php
+//////// Création d'un nouveau mot de passe pour nouvel utilisateur ////////
+// ====> Cela fournira un mot de passe hashé en fonction du MDP visible <====
+
 $new_password = '1234'; // Mot de passe lisible choisi pour le nouvel utilisateur
 $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
 echo "Mot de passe lisible : $new_password\n";

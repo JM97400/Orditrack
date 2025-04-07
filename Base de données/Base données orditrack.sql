@@ -28,23 +28,44 @@ CREATE TABLE IF NOT EXISTS `pcs` (
   `date_retour` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `numero_serie` (`numero_serie`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Listage des données de la table gestion_pret_pc.pcs : ~13 rows (environ)
+-- Listage des données de la table gestion_pret_pc.pcs : ~40 rows (environ)
 INSERT INTO `pcs` (`id`, `numero_serie`, `status`, `date_debut`, `date_retour`) VALUES
-	(4, 'PC-TEST-124', 'réservé', NULL, NULL),
-	(5, 'PC-TEST-125', 'réservé', NULL, NULL),
-	(6, 'PC-TEST-126', 'disponible', NULL, NULL),
-	(7, 'PC-TEST-127', 'disponible', NULL, NULL),
-	(9, 'PC-TEST-129', 'disponible', NULL, NULL),
-	(10, 'PC-TEST-130', 'disponible', NULL, NULL),
-	(11, 'PC-TEST-131', 'disponible', NULL, NULL),
-	(12, 'PC-TEST-132', 'disponible', NULL, NULL),
-	(13, 'PC-TEST-133', 'réservé', NULL, NULL),
-	(14, 'PC-TEST-134', 'disponible', NULL, NULL),
-	(25, 'PC-TEST-144', 'en réparation', NULL, NULL),
-	(27, 'PC-TEST-146', 'en réparation', NULL, NULL),
-	(28, 'PC-TEST-150', 'disponible', NULL, NULL);
+	(43, 'PC-buro-101', 'en réparation', NULL, NULL),
+	(45, 'PC-buro-102', 'disponible', NULL, NULL),
+	(46, 'PC-buro-103', 'disponible', NULL, NULL),
+	(47, 'PC-buro-104', 'réservé', NULL, NULL),
+	(48, 'PC-buro-105', 'en réparation', NULL, NULL),
+	(49, 'PC-buro-106', 'disponible', NULL, NULL),
+	(50, 'PC-buro-107', 'disponible', NULL, NULL),
+	(51, 'PC-buro-108', 'disponible', NULL, NULL),
+	(52, 'PC-buro-109', 'disponible', NULL, NULL),
+	(53, 'PC-buro-110', 'réservé', NULL, NULL),
+	(54, 'PC-buro-111', 'disponible', NULL, NULL),
+	(55, 'PC-buro-112', 'disponible', NULL, NULL),
+	(56, 'PC-buro-113', 'réservé', NULL, NULL),
+	(57, 'PC-buro-114', 'disponible', NULL, NULL),
+	(58, 'PC-buro-115', 'disponible', NULL, NULL),
+	(59, 'PC-buro-116', 'disponible', NULL, NULL),
+	(60, 'PC-buro-117', 'réservé', NULL, NULL),
+	(61, 'PC-buro-118', 'disponible', NULL, NULL),
+	(86, 'PC-graph-501', 'disponible', NULL, NULL),
+	(87, 'PC-graph-502', 'disponible', NULL, NULL),
+	(88, 'PC-graph-503', 'disponible', NULL, NULL),
+	(89, 'PC-graph-504', 'disponible', NULL, NULL),
+	(90, 'PC-graph-505', 'disponible', NULL, NULL),
+	(91, 'PC-graph-506', 'disponible', NULL, NULL),
+	(92, 'PC-graph-507', 'en réparation', NULL, NULL),
+	(93, 'PC-graph-508', 'en réparation', NULL, NULL),
+	(94, 'PC-graph-509', 'disponible', NULL, NULL),
+	(95, 'PC-graph-510', 'disponible', NULL, NULL),
+	(96, 'PC-graph-511', 'disponible', NULL, NULL),
+	(97, 'PC-graph-512', 'réservé', NULL, NULL),
+	(98, 'PC-graph-513', 'disponible', NULL, NULL),
+	(99, 'PC-graph-514', 'réservé', NULL, NULL),
+	(100, 'PC-graph-515', 'disponible', NULL, NULL),
+	(101, 'PC-graph-516', 'disponible', NULL, NULL);
 
 -- Listage de la structure de table gestion_pret_pc. reservations
 CREATE TABLE IF NOT EXISTS `reservations` (
@@ -56,9 +77,9 @@ CREATE TABLE IF NOT EXISTS `reservations` (
   `status` enum('en attente','validé','rendu','annulé','réservé','en réparation','disponible') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'en attente',
   `validated_by` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=145 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Listage des données de la table gestion_pret_pc.reservations : ~67 rows (environ)
+-- Listage des données de la table gestion_pret_pc.reservations : ~113 rows (environ)
 INSERT INTO `reservations` (`id`, `id_user`, `id_pc`, `date_debut`, `date_retour`, `status`, `validated_by`) VALUES
 	(5, 2, 2, '2025-02-13 14:56:04', '2025-02-13 15:56:04', 'rendu', NULL),
 	(6, 2, 1, '2025-02-13 15:10:05', '2025-02-13 16:10:05', 'rendu', NULL),
@@ -117,26 +138,72 @@ INSERT INTO `reservations` (`id`, `id_user`, `id_pc`, `date_debut`, `date_retour
 	(59, 2, 25, '2025-02-21 15:33:00', '2025-03-01 15:33:00', 'annulé', NULL),
 	(60, 2, 18, '2025-02-21 15:46:00', '2025-02-22 15:46:00', 'annulé', NULL),
 	(61, 2, 25, '2025-02-21 15:47:00', '2025-02-22 15:47:00', 'annulé', NULL),
-	(62, 2, 13, '2025-02-21 16:01:00', '2025-02-28 16:01:00', 'validé', NULL),
+	(62, 2, 13, '2025-02-21 16:01:00', '2025-02-28 16:01:00', 'rendu', NULL),
 	(63, 2, 10, '2025-02-21 16:11:00', '2025-03-02 16:11:00', 'annulé', NULL),
-	(64, 2, 10, '2025-02-22 08:50:00', '2025-02-26 08:50:00', 'validé', NULL),
+	(64, 2, 10, '2025-02-22 08:50:00', '2025-02-26 08:50:00', 'rendu', NULL),
 	(65, 2, 2, '2025-02-22 09:41:00', '2025-03-02 09:41:00', 'rendu', NULL),
 	(66, 2, 2, '2025-02-22 09:57:00', '2025-02-28 09:57:00', 'rendu', NULL),
 	(67, 2, 2, '2025-02-26 09:57:00', '2025-03-07 09:57:00', 'validé', NULL),
-	(68, 2, 4, '2025-02-22 09:58:00', '2025-03-07 09:58:00', 'validé', NULL),
+	(68, 2, 4, '2025-02-22 09:58:00', '2025-03-07 09:58:00', 'rendu', NULL),
 	(69, 2, 2, '2025-02-21 13:02:00', '2025-03-01 13:02:00', 'annulé', NULL),
 	(70, 2, 2, '2025-02-26 13:02:00', '2025-03-01 13:02:00', 'annulé', NULL),
-	(71, 2, 5, '2025-02-22 13:03:00', '2025-03-08 13:03:00', 'validé', NULL),
 	(72, 2, 2, '2025-02-22 13:05:00', '2025-03-09 13:05:00', 'annulé', NULL),
 	(73, 2, 6, '2025-02-22 13:06:00', '2025-02-28 13:06:00', 'rendu', NULL),
-	(74, 2, 6, '2025-02-21 13:07:00', '2025-03-01 13:07:00', 'en attente', NULL),
-	(75, 2, 7, '2025-02-22 13:07:00', '2025-02-28 13:07:00', 'en attente', NULL),
-	(76, 2, 9, '2025-02-26 08:56:00', '2025-02-27 08:56:00', 'rendu', NULL);
+	(74, 2, 6, '2025-02-21 13:07:00', '2025-03-01 13:07:00', 'rendu', NULL),
+	(76, 2, 9, '2025-02-26 08:56:00', '2025-02-27 08:56:00', 'rendu', NULL),
+	(77, 2, 4, '2025-03-04 16:14:00', '2025-03-12 16:14:00', 'annulé', NULL),
+	(82, 2, 14, '2025-03-11 16:39:00', '2025-03-14 16:40:00', 'annulé', NULL),
+	(83, 2, 4, '2025-03-10 16:42:00', '2025-03-17 16:42:00', 'annulé', NULL),
+	(84, 2, 12, '2025-03-11 16:44:00', '2025-03-21 16:44:00', 'rendu', NULL),
+	(85, 2, 14, '2025-03-13 16:47:00', '2025-03-22 16:47:00', 'rendu', NULL),
+	(86, 2, 14, '2025-03-13 16:47:00', '2025-03-22 16:47:00', 'rendu', NULL),
+	(87, 2, 12, '2025-03-28 11:19:00', '2025-04-01 11:19:00', 'annulé', NULL),
+	(89, 2, 4, '2025-03-17 13:34:00', '2025-03-18 13:34:00', 'rendu', NULL),
+	(90, 2, 4, '2025-03-17 13:36:00', '2025-03-18 13:36:00', 'rendu', NULL),
+	(91, 2, 34, '2025-03-18 17:18:00', '2025-03-19 17:18:00', 'annulé', NULL),
+	(96, 2, 10, '2025-03-20 18:55:00', '2025-03-21 18:56:00', 'rendu', NULL),
+	(97, 2, 5, '2025-03-28 20:30:00', '2025-03-29 20:30:00', 'annulé', NULL),
+	(98, 2, 11, '2025-03-20 22:49:00', '2025-03-29 22:49:00', 'rendu', NULL),
+	(101, 2, 6, '2025-03-22 08:31:00', '2025-03-23 08:31:00', 'annulé', NULL),
+	(102, 2, 28, '2025-03-21 08:46:00', '2025-03-22 08:47:00', 'annulé', NULL),
+	(104, 2, 10, '2025-03-25 11:46:00', '2025-03-29 11:46:00', 'annulé', NULL),
+	(105, 2, 10, '2025-03-22 17:55:00', '2025-03-30 17:55:00', 'annulé', NULL),
+	(106, 2, 33, '2025-03-22 15:08:00', '2025-03-28 15:11:00', 'annulé', NULL),
+	(107, 2, 6, '2025-03-23 16:30:00', '2025-03-24 16:30:00', 'annulé', NULL),
+	(108, 2, 5, '2025-03-27 10:31:00', '2025-03-29 10:31:00', 'annulé', NULL),
+	(109, 2, 6, '2025-03-29 10:31:00', '2025-04-05 10:31:00', 'annulé', NULL),
+	(110, 2, 38, '2025-04-08 10:31:00', '2025-04-24 10:31:00', 'annulé', NULL),
+	(111, 2, 9, '2025-03-28 10:35:00', '2025-04-06 10:35:00', 'rendu', NULL),
+	(113, 2, 10, '2025-03-28 10:36:00', '2025-04-27 10:36:00', 'rendu', NULL),
+	(116, 2, 6, '2025-03-31 11:22:00', '2025-04-30 11:22:00', 'annulé', NULL),
+	(119, 2, 46, '2025-04-01 18:09:00', '2025-04-06 18:09:00', 'rendu', NULL),
+	(121, 2, 53, '2025-04-03 18:09:00', '2025-04-16 18:10:00', 'validé', NULL),
+	(123, 2, 6, '2025-04-05 18:10:00', '2025-04-11 18:10:00', 'en attente', NULL),
+	(124, 2, 60, '2025-04-06 18:11:00', '2025-04-20 18:11:00', 'validé', NULL),
+	(125, 2, 47, '2025-06-07 18:11:00', '2025-06-26 18:11:00', 'validé', NULL),
+	(126, 2, 56, '2025-04-12 18:11:00', '2025-04-27 18:11:00', 'validé', NULL),
+	(128, 2, 81, '2025-04-02 18:15:00', '2025-04-06 18:15:00', 'annulé', NULL),
+	(129, 2, 78, '2025-04-05 18:15:00', '2025-04-20 18:15:00', 'annulé', NULL),
+	(130, 2, 54, '2025-04-05 18:15:00', '2025-05-10 18:15:00', 'en attente', NULL),
+	(131, 2, 75, '2025-04-06 18:15:00', '2025-05-09 18:15:00', 'annulé', NULL),
+	(132, 2, 51, '2025-04-05 18:15:00', '2025-05-07 18:16:00', 'en attente', NULL),
+	(133, 2, 43, '2025-03-29 18:19:00', '2025-04-03 18:19:00', 'en attente', NULL),
+	(134, 2, 72, '2025-04-05 18:20:00', '2025-04-19 18:20:00', 'annulé', NULL),
+	(135, 2, 90, '2025-03-29 18:27:00', '2025-04-04 18:27:00', 'annulé', NULL),
+	(136, 2, 98, '2025-04-04 18:27:00', '2025-04-16 18:27:00', 'annulé', NULL),
+	(137, 2, 97, '2025-03-30 18:28:00', '2025-04-06 18:28:00', 'validé', NULL),
+	(138, 2, 99, '2025-04-06 18:28:00', '2025-05-10 18:28:00', 'validé', NULL),
+	(139, 2, 101, '2025-04-13 18:28:00', '2025-05-10 18:28:00', 'en attente', NULL),
+	(140, 2, 96, '2025-05-10 18:28:00', '2025-06-07 18:28:00', 'en attente', NULL),
+	(141, 2, 86, '2025-04-07 10:51:00', '2025-04-08 10:51:00', 'annulé', NULL),
+	(142, 2, 43, '2025-04-07 11:08:00', '2025-04-08 11:08:00', 'en attente', NULL),
+	(143, 2, 88, '2025-04-08 10:54:00', '2025-04-09 10:54:00', 'en attente', NULL),
+	(144, 3, 45, '2025-04-18 14:21:00', '2025-05-09 14:21:00', 'en attente', NULL);
 
 -- Listage de la structure de table gestion_pret_pc. users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `password_hash` varchar(50) DEFAULT NULL,
   `microsoft_id` varchar(50) DEFAULT NULL,
@@ -145,12 +212,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `microsoft_id` (`microsoft_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Listage des données de la table gestion_pret_pc.users : ~1 rows (environ)
+-- Listage des données de la table gestion_pret_pc.users : ~2 rows (environ)
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `microsoft_id`, `created_at`, `role`, `password`) VALUES
 	(1, 'user1', NULL, NULL, NULL, '2025-02-12 10:28:32', 'user', NULL),
-	(2, 'user', NULL, '1234', NULL, '2025-02-13 10:46:28', 'user', NULL);
+	(3, 'user', NULL, NULL, NULL, '2025-04-07 09:17:39', 'user', '$2y$10$1N6cieShtAr983uz9xcyHeLx3WHnP.uR0ENnOcU4uz/ksUyG6BYI.'),
+	(4, 'admin', NULL, NULL, NULL, '2025-04-07 09:17:39', 'admin', '$2y$10$lCfTGMLRiKfz5ZUCjAFauuo30dDToYndsTDkaiLAfTpjVnHLlw6uG'),
+	(5, 'norum', NULL, NULL, NULL, '2025-04-07 09:36:42', 'user', '$2y$10$xtaU6hhPxuUGVWviZ8/QXuEs3dJyVr2GCbvs/sPN9fWYdyTL2vMum'),
+	(7, 'joey', NULL, NULL, NULL, '2025-04-07 09:54:22', 'user', '$2y$10$3KbvtKW.utkLTKlO5S1bOOUpSnAVaqXhFr8Dcl1ZwbN1OtniDVZsi'),
+	(10, 'tempest', NULL, NULL, NULL, '2025-04-07 10:27:15', 'user', '$2y$10$o9gXCKBlFtTU4wsgVR2NEO7NZ9mfK67OckQICt4awm0xdqKzK289i'),
+	(11, 'kee', NULL, NULL, NULL, '2025-04-07 10:41:25', 'user', '$2y$10$y27kTdIPyIvaVtlVbxBZ1uPiHSfU6V506uyER2ZHcbg5IdCra6x6K'),
+	(12, 'john', NULL, NULL, NULL, '2025-04-07 10:53:01', 'user', '$2y$10$5s3ldGXb4t9Q3F8PivjoWuU7WmCaR.ZyAW9rAa5s88ETQYbIQ6Xum');
 
 -- Listage de la structure de déclencheur gestion_pret_pc. after_reservation_validation
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
