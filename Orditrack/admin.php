@@ -26,7 +26,7 @@ $sql = "SELECT r.id, u.username AS user, u.email AS user_email, p.numero_serie A
         FROM reservations r
         JOIN users u ON r.id_user = u.id
         JOIN pcs p ON r.id_pc = p.id
-        WHERE r.status = 'en attente' /*Filtre par statut "en attente" et recherche dans le numéro de série, l’utilisateur, le numéro de réservation, ou les dates.*/
+        WHERE r.status = 'en attente' /*Filtre par statut \"en attente\" et recherche dans le numéro de série, l’utilisateur, le numéro de réservation, ou les dates.*/
         AND (p.numero_serie LIKE :search 
              OR u.username LIKE :search 
              OR CONCAT('RES-', LPAD(r.id, 4, '0')) LIKE :search /*Ajoute des zéros au numéro de réservation*/

@@ -3,7 +3,7 @@
 /*/////////////Page de connexion User et Admin////////////*/
 /*///////////////////////////////////////////////////////*/
 
-require 'config.php'; // Inclut session_start() et génère $_SESSION['csrf_token']
+require 'config.php'; 
 
 // Traitement de la connexion de l'utilisateur ou de l'administrateur
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
