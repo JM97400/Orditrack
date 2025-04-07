@@ -4,7 +4,7 @@
 $host = 'localhost';
 $dbname = 'gestion_pret_pc';
 $username = 'root'; 
-$password = ''; // Pas de mot de passe pour root, comme à l'origine
+$password = ''; 
 
 // Durée maximale de la session : 30 minutes (en secondes)
 $session_timeout = 1800; // soit 30 * 60 = 1800 secondes
@@ -17,8 +17,8 @@ if (session_status() === PHP_SESSION_NONE) {
         'path' => '/',                  // Disponible sur tout le site
         'domain' => '',                 // Domaine actuel
         'secure' => false,              // Mettre true en production avec HTTPS
-        'httponly' => true,             // Protection contre XSS
-        'samesite' => 'Strict'          // Protection contre CSRF
+        'httponly' => true,             // Protection contre XSS => Le cookie ne peut pas être lu et volé par JavaScript pour voler les données et injecter du code.
+        'samesite' => 'Strict'          // Protection contre CSRF => Le cookie ne sera envoyé que si la requête vient du site évitant ainsi que les permissions existantes puissent être utilisée par quelqu'un en dehors.
     ]);
     // Démarrer la session uniquement si elle n'est pas déjà active
     session_start();
@@ -41,17 +41,15 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
 // Met à jour la dernière activité à chaque chargement de page
 $_SESSION['last_activity'] = time();
 
-// Génère un jeton CSRF s’il n’existe pas
+////// Génère un jeton CSRF s’il n’existe pas////////
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Token aléatoire sécurisé
 }
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC // Pour compatibilité avec login.php
-    ]);
-    // echo "Connexion réussie à la base de données."; 
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+     // echo "Connexion réussie à la base de données."; 
 } catch (PDOException $e) {
     die("Erreur de connexion : " . $e->getMessage());
 }
