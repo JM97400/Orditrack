@@ -24,8 +24,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute(['username' => $username, 'role' => $role]);
             $user = $stmt->fetch();
 
-            // Vérifier si l'utilisateur existe et si le mot de passe est correct (en clair)
-            if ($user && $password === $user['password']) {
+            // Vérifier si l'utilisateur existe et si le mot de passe est correct (haché)
+            if ($user && password_verify($password, $user['password'])) {
                 // Enregistre l'utilisateur dans la session
                 $_SESSION['username'] = $username;
                 $_SESSION['role'] = $role;
