@@ -53,7 +53,7 @@ $sql_prêt = "SELECT r.id AS reservation_id, r.date_debut, r.date_retour, u.user
              FROM reservations r
              JOIN users u ON r.id_user = u.id
              JOIN pcs p ON r.id_pc = p.id
-             WHERE r.status = 'en prêt'
+             WHERE r.status = 'validé'
              AND (p.numero_serie LIKE :search 
                   OR u.username LIKE :search 
                   OR CONCAT('RES-', LPAD(r.id, 4, '0')) LIKE :search 
