@@ -63,6 +63,20 @@ $stmt_prêt = $pdo->prepare($sql_prêt);
 $stmt_prêt->execute([':search' => "%$search%", ':search_date' => $search_date ? "%$search_date%" : "%$search%"]);
 $pcs_prêt = $stmt_prêt->fetchAll();
 
+$sql_ok = "SELECT r.id, u.username AS user, r.status AS status,  u.email AS user_email, p.numero_serie AS pc, r.date_debut, r.date_retour, CONCAT('RES-', LPAD(r.id, 4, '0')) AS numero_reservation
+             FROM reservations r
+             JOIN users u ON r.id_user = u.id
+             JOIN pcs p ON r.id_pc = p.id
+             WHERE r.status = 'validé'
+             AND (p.numero_serie LIKE :search 
+                  OR u.username LIKE :search 
+                  OR CONCAT('RES-', LPAD(r.id, 4, '0')) LIKE :search 
+                  OR DATE(r.date_debut) LIKE :search_date 
+                  OR DATE(r.date_retour) LIKE :search_date)";
+$stmt_ok = $pdo->prepare($sql_ok);
+$stmt_ok->execute([':search' => "%$search%", ':search_date' => $search_date ? "%$search_date%" : "%$search%"]);
+$pcs_vld = $stmt_ok->fetchAll();
+
 /* Compter le nombre total de PCs dans chaque catégorie */
 $total_pcs_disponibles = count($pcs_disponibles);
 $total_pcs_sav = count($pcs_sav);
@@ -118,6 +132,15 @@ if (isset($_GET['selected_prêt'])) {
     }
 }
 
+if (isset($_GET['selected_validé'])) {
+    $selected_id = $_GET['selected_validé'];
+    $selected_index = array_search($selected_id, array_column($pcs_vld, 'id'));
+    if ($selected_index !== false) {
+        $selected_validé = array_splice($pcs_vld, $selected_index, 1)[0];
+        array_unshift($pcs_vld, $selected_validé);
+    }
+}
+
 if (isset($_GET['selected_sav'])) {
     $selected_id = $_GET['selected_sav'];
     $selected_index = array_search($selected_id, array_column($pcs_sav, 'id'));
@@ -164,10 +187,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     /* Valider un prêt */
     if (isset($_POST['prêt'])) {
         $pc_id = $_POST['pc_id'];
-        $update_sql = "UPDATE pcs SET status = 'en prêt' WHERE id = :pc_id";
+        $update_sql = "UPDATE reservations SET status = 'en prêt' WHERE id = :pc_id";
         $stmt_update = $pdo->prepare($update_sql);
         $stmt_update->execute([':pc_id' => $pc_id]);
-        header("Location: admin.php");
+        header("Location: admin.php?$pc_id");
         exit;
     }
 
@@ -438,16 +461,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!-- Colonne centrale : PC en attente de prêt -->
                 <div class="stock-column">
                     <h2>PC en attente de prêt</h2>
-                    <?php if (count($reservations) > 0): ?>
+                    <?php if (count($pcs_vld) > 0): ?>
                         <ul>
                             <?php 
-                            $visible_pending = array_slice($reservations, 0, 5);
-                            $extra_pending = array_slice($reservations, 5);
+                            $visible_pending = array_slice($pcs_vld, 0, 5);
+                            $extra_pending = array_slice($pcs_vld, 5);
                             foreach ($visible_pending as $reservation): ?>
                                 <li>
                                     <?php echo htmlspecialchars($reservation['pc']); ?><br>
                                     <?php echo htmlspecialchars($reservation['numero_reservation']); ?><br>
-                                    (Utilisateur : <?php echo htmlspecialchars($reservation['user']); ?>, Date de début : <?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y H:i')); ?>)
+                                    (Status : <?php echo htmlspecialchars($reservation['status']); ?>, Utilisateur : <?php echo htmlspecialchars($reservation['user']); ?>, Date de début : <?php echo htmlspecialchars((new DateTime($reservation['date_debut']))->format('d/m/Y H:i')); ?>)
                                     <form action="admin.php" method="POST" style="display:inline;">
                                         <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire -->
                                         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
@@ -467,7 +490,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <form method="GET" action="admin.php">
                                 <!-- MODIFICATION CSRF : Ajout du jeton CSRF dans le formulaire de sélection -->
                                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-                                <select name="selected_reservation" onchange="this.form.submit();">
+                                <select name="selected_validé" onchange="this.form.submit();">
                                     <option value="">Autres PC en attente...</option>
                                     <?php foreach ($extra_pending as $reservation): ?>
                                         <option value="<?php echo $reservation['id']; ?>">
