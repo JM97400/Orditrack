@@ -3,7 +3,7 @@
  /*///////////////////////////////////////////////////////*/-->
 
  <?php
-require 'config.php';
+require_once 'config/main.php';
 
 // MODIFICATION : Vérification si l'utilisateur est connecté (admin)
 if (!isset($_SESSION['username'])) {
@@ -18,7 +18,7 @@ if (!isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tutoriel : Remplir un fichier CSV pour Orditrack</title>
-    <link rel="stylesheet" href="emploi-csv.css">
+    <link rel="stylesheet" href="public/assets/css/emploi-csv.css">
 </head>
 <body>
     <div class="tutorial-container">

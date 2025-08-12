@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require_once 'config/main.php';
 
 // Vérifier si l'utilisateur est admin
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {

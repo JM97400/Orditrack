@@ -1,10 +1,6 @@
 <?php
-// config.php : Connexion à la base de données et configuration des sessions
-
-$host = 'localhost';
-$dbname = 'gestion_pret_pc';
-$username = 'root'; 
-$password = ''; 
+// backup-sessions.php : Configuration de sauvegarde des sessions
+// Ce fichier peut être utilisé pour des configurations alternatives ou de test
 
 // Durée maximale de la session : 30 minutes (en secondes)
 $session_timeout = 1800; // soit 30 * 60 = 1800 secondes
@@ -41,16 +37,8 @@ if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) >
 // Met à jour la dernière activité à chaque chargement de page
 $_SESSION['last_activity'] = time();
 
-////// Génère un jeton CSRF s’il n’existe pas////////
+////// Génère un jeton CSRF s'il n'existe pas////////
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Token aléatoire sécurisé
-}
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-     // echo "Connexion réussie à la base de données."; 
-} catch (PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
 }
 ?>

@@ -4,7 +4,7 @@
 /*///////////////////////////////////////////////////////*/
 
 /* Se connecter à la base de données */
-require 'config.php';
+require_once 'config/main.php';
 
 // Vérifier si l'utilisateur est connecté en utilisant le rôle 'user' dans la session
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'user') {
@@ -180,7 +180,7 @@ if (isset($_GET['get_available_pcs']) && isset($_GET['date_debut']) && isset($_G
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation PC</title>
-    <link rel="stylesheet" href="reservation.css">
+    <link rel="stylesheet" href="/public/assets/css/reservation.css">
 </head>
 <body>
     <div class="navbar">

@@ -1,6 +1,6 @@
 <?php
 /* Inclure le fichier de configuration pour la connexion à la base de données */
-require 'config.php';
+require_once 'config/main.php';
 
 // Vérification si la méthode est POST pour la réservation - On vérifie si un formulaire de réservation est envoyé avec les champs nécessaires (ID utilisateur, ID PC, dates).
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_id'], $_POST['date_debut'], $_POST['date_retour'])) {
@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prêt de PC - Accueil</title>
     <link rel="icon" type="image/png" href="favicon.ico">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/public/assets/css/style.css">
 </head>
 
 <!--<script> /////////// Ancienne version d'alerte réservation (en pop up) /////////////

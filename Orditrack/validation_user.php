@@ -2,7 +2,7 @@
 /*////////////////////////////////////////////////////////////////////////////////*/
 /*/////////////Page de validation de la demande, attente confirmation ///////////*/
 /*//////////////////////////////////////////////////////////////////////////////*/
-require 'config.php';
+require_once 'config/main.php';
 
 // Vérifier si l'utilisateur est connecté avec le rôle 'user'
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'user') {
@@ -47,7 +47,7 @@ $numero_reservation = "RES-" . str_pad($reservation['id'], 4, "0", STR_PAD_LEFT)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmation de Réservation</title>
-    <link rel="stylesheet" href="validation.css">
+    <link rel="stylesheet" href="/public/assets/css/validation.css">
 </head>
 <body>
     <div class="navbar">

@@ -3,7 +3,7 @@
 /*/////////////Page de connexion User et Admin////////////*/
 /*///////////////////////////////////////////////////////*/
 
-require 'config.php'; // Inclut session_start() et génère $_SESSION['csrf_token']
+require_once 'config/main.php'; // Inclut session_start() et génère $_SESSION['csrf_token']
 
 // Traitement de la connexion de l'utilisateur ou de l'administrateur
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/public/assets/css/style.css">
 </head>
 <body>
 
