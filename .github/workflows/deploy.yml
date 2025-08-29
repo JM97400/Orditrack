@@ -1,0 +1,24 @@
+<<<<<<< HEAD
+=======
+name: SSH test only
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ssh-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH (from base64 one-liner)
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p ~/.ssh
+          echo "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNDME82TXM5dGtjVExGeHRLUXovUitvUEhCdFFQdlhTbmFqaVVOT0V3NFRQZ0FBQUpDRTNjUVZoTjNFCkZRQUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQzBPNk1zOXRrY1RMRnh0S1F6L1Irb1BIQnRRUHZYU25hamlVTk9FdzRUUGcKQUFBRUE2eDgzYTQ4cm13UFdQVGFFZ3A3UWhMVTBmT0hyY1FMREt3UytyUG9ZSUVyUTdveXoyMlJ4TXNYRzBwRFA5SDZnOApjRzFBKzlkS2RxT0pRMDRURGhNK0FBQUFDbWRvWVMxa1pYQnNiM2tCQWdNPQotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K" | base64 -d > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan 172.16.160.159 >> ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostKeyChecking=yes deploy@172.16.160.159 'echo "✅ Connected OK"; whoami; hostname; uname -a'
+>>>>>>> f6628b25e5fbd8098f2610d4ac0b7160efa20ec5
