@@ -3,8 +3,8 @@
 
 $host = 'localhost';
 $dbname = 'gestion_pret_pc';
-$username = 'root'; 
-$password = ''; // Pas de mot de passe pour root, comme à l'origine
+$username = 'ot_user'; 
+$password = 'Orditrack974'; // Pas de mot de passe pour root, comme à l'origine
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password, [
