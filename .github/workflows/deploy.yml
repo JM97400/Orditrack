@@ -35,19 +35,11 @@ jobs:
           npm ci
           npm run build || true
 
-      # --- SSH ---
+      # --- SSH sans secrets (clé base64) ---
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          cat > ~/.ssh/id_ed25519 << 'EOF'
------BEGIN OPENSSH PRIVATE KEY-----
-b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-QyNTUxOQAAACC0O6Ms9tkcTLFxtKQz/R+oPHBtQPvXSnajiUNOEw4TPgAAAJCE3cQVhN3E
-FQAAAAtzc2gtZWQyNTUxOQAAACC0O6Ms9tkcTLFxtKQz/R+oPHBtQPvXSnajiUNOEw4TPg
-AAAEA6x83a48rmwPWPTaEgp7QhLU0fOHrcQLDKwS+rPoYIErQ7oyz22RxMsXG0pDP9H6g8
-cG1A+9dKdqOJQ04TDhM+AAAACmdoYS1kZXBsb3kBAgM=
------END OPENSSH PRIVATE KEY-----
-EOF
+          echo 'BASE64_PRIVATE_KEY' | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan 172.16.160.159 >> ~/.ssh/known_hosts
 
