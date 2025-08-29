@@ -2,18 +2,16 @@ name: Deploy to Debian (Apache, orditrack)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # --- PHP/Composer (optionnel) ---
       - name: Install PHP deps (Composer)
         if: hashFiles('composer.json') != ''
         run: |
@@ -23,7 +21,6 @@ jobs:
           sudo mv composer.phar /usr/local/bin/composer
           composer install --no-dev --optimize-autoloader
 
-      # --- Node (optionnel) ---
       - name: Setup Node
         if: hashFiles('package.json') != ''
         uses: actions/setup-node@v4
@@ -35,26 +32,22 @@ jobs:
           npm ci
           npm run build || true
 
-      # --- SSH sans secrets (clé base64) ---
-      - name: Setup SSH
+      - name: Setup SSH (base64)
+        shell: bash
         run: |
           mkdir -p ~/.ssh
-          echo 'BASE64_PRIVATE_KEY' | base64 -d > ~/.ssh/id_ed25519
+          echo 'LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNDME82TXM5dGtjVExGeHRLUXovUitvUEhCdFFQdlhTbmFqaVVOT0V3NFRQZ0FBQUpDRTNjUVZoTjNFCkZRQUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQzBPNk1zOXRrY1RMRnh0S1F6L1Irb1BIQnRRUHZYU25hamlVTk9FdzRUUGcKQUFBRUE2eDgzYTQ4cm13UFdQVGFFZ3A3UWhMVTBmT0hyY1FMREt3UytyUG9ZSUVyUTdveXoyMlJ4TXNYRzBwRFA5SDZnOApjRzFBKzlkS2RxT0pRMDRURGhNK0FBQUFDbWRvWVMxa1pYQnNiM2tCQWdNPQotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K' | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan 172.16.160.159 >> ~/.ssh/known_hosts
 
-      # --- Déploiement (rsync) ---
       - name: Rsync to server
         run: |
           rsync -az --delete \
-            --exclude=".git" \
-            --exclude=".github" \
-            --exclude="node_modules" \
-            --exclude="*.log" \
+            --exclude=".git" --exclude=".github" \
+            --exclude="node_modules" --exclude="*.log" \
             -e ssh \
             ./ deploy@172.16.160.159:/var/www/html/orditrack/
 
-      # --- Permissions & reload Apache ---
       - name: Fix perms & reload Apache
         run: |
           ssh deploy@172.16.160.159 '
