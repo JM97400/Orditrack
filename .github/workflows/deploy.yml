@@ -12,16 +12,12 @@ jobs:
         run: |
           set -eu
           mkdir -p ~/.ssh
-          # Clé privée encodée en base64 (délimiteurs B64 sur une ligne seule)
-          cat > /tmp/key.b64 <<'B64'
-          LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNDME82TXM5dGtjVExGeHRLUXovUitvUEhCdFFQdlhTbmFqaVVOT0V3NFRQZ0FBQUpDRTNjUVZoTjNFCkZRQUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQzBPNk1zOXRrY1RMRnh0S1F6L1Irb1BIQnRRUHZYU25hamlVTk9FdzRUUGcKQUFBRUE2eDgzYTQ4cm13UFdQVGFFZ3A3UWhMVTBmT0hyY1FMREt3UytyUG9ZSUVyUTdveXoyMlJ4TXNYRzBwRFA5SDZnOApjRzFBKzlkS2RxT0pRMDRURGhNK0FBQUFDbWRvWVMxa1pYQnNiM2tCQWdNPQotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K
-          B64
-          # Retire les retours à la ligne/espaces puis décode
-          tr -d '\r\n ' < /tmp/key.b64 | base64 -d > ~/.ssh/id_ed25519
+          # colle ta clé base64 en une seule ligne entre les quotes
+          echo "LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNDME82TXM5dGtjVExGeHRLUXovUitvUEhCdFFQdlhTbmFqaVVOT0V3NFRQZ0FBQUpDRTNjUVZoTjNFCkZRQUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQzBPNk1zOXRrY1RMRnh0S1F6L1Irb1BIQnRRUHZYU25hamlVTk9FdzRUUGcKQUFBRUE2eDgzYTQ4cm13UFdQVGFFZ3A3UWhMVTBmT0hyY1FMREt3UytyUG9ZSUVyUTdveXoyMlJ4TXNYRzBwRFA5SDZnOApjRzFBKzlkS2RxT0pRMDRURGhNK0FBQUFDbWRvWVMxa1pYQnNiM2tCQWdNPQotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K" \
+          | tr -d '\r\n ' | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          # Ajoute l'hôte à known_hosts pour éviter le prompt
           ssh-keyscan 172.16.160.159 >> ~/.ssh/known_hosts
 
       - name: Test SSH connection
         run: |
-          ssh -o StrictHostKeyChecking=yes deploy@172.16.160.159 'echo "OK: connected"; whoami; hostname; uname -a'
+          ssh -o StrictHostKeyChecking=yes deploy@172.16.160.159 'echo "✅ OK connected"; whoami; hostname; uname -a'
