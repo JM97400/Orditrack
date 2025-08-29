@@ -47,7 +47,7 @@ $numero_reservation = "RES-" . str_pad($reservation['id'], 4, "0", STR_PAD_LEFT)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirmation de Réservation</title>
-    <link rel="stylesheet" href="/public/assets/css/validation.css">
+    <link rel="stylesheet" href="public/assets/css/validation.css">
 </head>
 <body>
     <div class="navbar">

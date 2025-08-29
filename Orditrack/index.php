@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['user_id'], $_POST['pc_
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prêt de PC - Accueil</title>
     <link rel="icon" type="image/png" href="favicon.ico">
-    <link rel="stylesheet" href="/public/assets/css/style.css">
+    <link rel="stylesheet" href="public/assets/css/style.css">
 </head>
 
 <!--<script> /////////// Ancienne version d'alerte réservation (en pop up) /////////////

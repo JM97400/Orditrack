@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Politique RGPD - Gestion de Prêt de PC</title>
-    <link rel="stylesheet" href="rgpd.css">
+    <link rel="stylesheet" href="public/assets/cssrgpd.css">
 </head>
 <body>
 

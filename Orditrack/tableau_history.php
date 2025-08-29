@@ -28,7 +28,7 @@ $all_reservations = $stmt_all->fetchAll(); // Toutes les informations sont stock
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historique des Réservations</title>
-    <link rel="stylesheet" href="/public/assets/css/tableau_history.css">
+    <link rel="stylesheet" href="public/assets/css/tableau_history.css">
 </head>
 <body>
     <main>
