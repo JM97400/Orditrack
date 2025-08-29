@@ -12,6 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # --- PHP/Composer (optionnel) ---
       - name: Install PHP deps (Composer)
         if: hashFiles('composer.json') != ''
         run: |
@@ -21,6 +22,7 @@ jobs:
           sudo mv composer.phar /usr/local/bin/composer
           composer install --no-dev --optimize-autoloader
 
+      # --- Node (optionnel) ---
       - name: Setup Node
         if: hashFiles('package.json') != ''
         uses: actions/setup-node@v4
@@ -32,22 +34,30 @@ jobs:
           npm ci
           npm run build || true
 
-      - name: Setup SSH (base64)
+      # --- SSH (clé en base64 intégrée) ---
+      - name: Setup SSH
         shell: bash
         run: |
           mkdir -p ~/.ssh
-          echo 'LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNDME82TXM5dGtjVExGeHRLUXovUitvUEhCdFFQdlhTbmFqaVVOT0V3NFRQZ0FBQUpDRTNjUVZoTjNFCkZRQUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQzBPNk1zOXRrY1RMRnh0S1F6L1Irb1BIQnRRUHZYU25hamlVTk9FdzRUUGcKQUFBRUE2eDgzYTQ4cm13UFdQVGFFZ3A3UWhMVTBmT0hyY1FMREt3UytyUG9ZSUVyUTdveXoyMlJ4TXNYRzBwRFA5SDZnOApjRzFBKzlkS2RxT0pRMDRURGhNK0FBQUFDbWRvWVMxa1pYQnNiM2tCQWdNPQotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K' | base64 -d > ~/.ssh/id_ed25519
+          cat > /tmp/key.b64 <<'B64'
+LS0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUFNd0FBQUF0emMyZ3RaVwpReU5UVXhPUUFBQUNDME82TXM5dGtjVExGeHRLUXovUitvUEhCdFFQdlhTbmFqaVVOT0V3NFRQZ0FBQUpDRTNjUVZoTjNFCkZRQUFBQXR6YzJndFpXUXlOVFV4T1FBQUFDQzBPNk1zOXRrY1RMRnh0S1F6L1Irb1BIQnRRUHZYU25hamlVTk9FdzRUUGcKQUFBRUE2eDgzYTQ4cm13UFdQVGFFZ3A3UWhMVTBmT0hyY1FMREt3UytyUG9ZSUVyUTdveXoyMlJ4TXNYRzBwRFA5SDZnOApjRzFBKzlkS2RxT0pRMDRURGhNK0FBQUFDbWRvWVMxa1pYQnNiM2tCQWdNPQotLS0tLUVORCBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0K
+B64
+          tr -d '\r\n ' < /tmp/key.b64 | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan 172.16.160.159 >> ~/.ssh/known_hosts
 
+      # --- Déploiement ---
       - name: Rsync to server
         run: |
           rsync -az --delete \
-            --exclude=".git" --exclude=".github" \
-            --exclude="node_modules" --exclude="*.log" \
+            --exclude=".git" \
+            --exclude=".github" \
+            --exclude="node_modules" \
+            --exclude="*.log" \
             -e ssh \
             ./ deploy@172.16.160.159:/var/www/html/orditrack/
 
+      # --- Permissions & reload Apache ---
       - name: Fix perms & reload Apache
         run: |
           ssh deploy@172.16.160.159 '
